@@ -2,6 +2,8 @@
 An open-source Shopify E-commerce Profit-Tracking App. Featuring a fully-fledged dashboard with the frontend written in 
 Vue.js/Nuxt.
 
+**Work-in-progress, as of 11/27/2021 no actual logic has been implemented.**
+
 ## Build Setup
 
 ```bash
