@@ -1,0 +1,43 @@
+#footer {
+  background-color: $bg;
+  min-height: 120px;
+  border-top: 1px solid lighten($bg, 6%);
+  color: $grey;
+  .hover-footer {
+    transition: all 150ms ease-in;
+    span {
+      transition: all 150ms ease-in;
+    }
+    &:hover {
+      color: white;
+      span {
+        color: #ef423c;
+      }
+    }
+  }
+  ul {
+    li:not(:first-child) {
+      margin: 10px 0;
+      a {
+        color: $grey-main;
+        &:hover {
+          color: $brand;
+        }
+      }
+    }
+  }
+}
+
+#footer-bottom {
+  background-color: $dark;
+  padding: 20px 0;
+  min-height: 71px;
+  display: flex;
+  align-items: center;
+  a {
+    color: $text-alt;
+    &:hover {
+      color: $brand;
+    }
+  }
+}

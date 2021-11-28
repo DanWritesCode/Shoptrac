@@ -1,0 +1,28 @@
+.bg {
+  background-color: $bg;
+}
+.bg-dark {
+  background-color: $dark;
+}
+.bg-box {
+  background-color: $box;
+
+}
+.bg-red {
+  background-color: $brand;
+}
+.bg-break {
+  background-color: $break;
+}
+.border-break {
+  border-color: $break !important;
+}
+.border-grey {
+  border-color: $grey-main !important;
+}
+.bg-red-wave {
+  margin-top: 95px;
+  margin-bottom: 48px;
+  min-height: 360px;
+  background: url("~assets/images/wave.svg") no-repeat center center;
+}

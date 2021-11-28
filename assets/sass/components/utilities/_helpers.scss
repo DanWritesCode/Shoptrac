@@ -1,0 +1,92 @@
+.w-5 {
+  width: 8%;
+}
+
+a {
+  transition: all ease-in 150ms;
+  text-decoration: none !important;
+  &:hover {
+    transition: all ease-out 150ms;
+  }
+}
+.is-green {
+  background-color: rgba(40,167,69, 0.15);
+  border-color: $green;
+  color: #6fcf97;
+}
+.is-red {
+  background-color: rgba(235,87,87, 0.15);
+  border-color: #eb5757;
+  color: #eb5757;
+}
+.is-red-hover {
+  background-color: rgba(235,87,87, 0.15);
+  border-color: #eb5757;
+  color: #eb5757;
+  &:hover {
+    background-color: rgba(235,87,87, 0.5);
+    border-color: #eb5757;
+    color: white;
+  }
+}
+.is-blue {
+  background-color: rgba(45,156,219, 0.15);
+  border-color: #2d9cdb;
+  color: #56ccf2;
+}
+.is-yellow {
+  background-color: rgba(242,201,76, 0.15);
+  border-color: #f2c94c;
+  color: #f2c94c;
+}
+.is-green-text {
+  color: #6fcf97;
+}
+.is-red-text {
+  color: #eb5757;
+}
+.is-blue-text {
+  color: #56ccf2;
+}
+.is-yellow-text {
+  color: #f2c94c;
+}
+.cursor {
+  cursor: pointer;
+}
+.cursor-disabled {
+  cursor: not-allowed;
+}
+
+::-webkit-scrollbar {
+  height: 4px;
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: $bg;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba($brand, 0.1);
+  border-radius: 0;
+  transition: all 150ms ease-in;
+  &:hover {
+    transition: all 150ms ease-out;
+    background-color: rgba($brand, 0.2);
+  }
+}
+.status {
+  border: 1px solid;
+  border-radius: 3px;
+  font-weight: bold;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  padding: 4px 10px;
+  font-size: 11px;
+  letter-spacing: 0.005em;
+  line-height: 14px;
+  cursor: pointer;
+  min-width: 132px;
+  min-height: 25px;
+  display: inline-block;
+  text-transform: uppercase;
+}

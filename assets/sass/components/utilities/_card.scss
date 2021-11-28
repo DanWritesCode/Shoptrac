@@ -1,0 +1,20 @@
+.card {
+  .card-header {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+    color: $text;
+    text-transform: uppercase;
+    padding: 25px 0 10px 0;
+    border-bottom: 1px solid $grey-alt;
+    margin-bottom: 30px;
+  }
+  border-radius: .2857rem;
+  box-shadow: 0 1px 20px 0 rgb(0 0 0 / 10%);
+  color: #fff;
+  font-weight: 100;
+}
+
+.card-height-650 {
+  height: 650px;
+}

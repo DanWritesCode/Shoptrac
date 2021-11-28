@@ -1,0 +1,83 @@
+.ff-poppins-eb {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+}
+.ff-poppins {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+.ff-poppins-sb {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+.ff-poppins-m {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+.ff-nato-sans {
+  font-family: 'Nato Sans', sans-serif;
+}
+.ff-open-sans {
+  font-family: 'Open sans', sans-serif;
+}
+.font-weight-semi-bold {
+  font-weight: 600 !important;
+}
+.fs-36 {
+  font-size: 36px;
+}
+.fs-24 {
+  font-size: 24px;
+}
+.fs-18 {
+  font-size: 18px;
+}
+.fs-16 {
+  font-size: 16px;
+}
+.fs-14 {
+  font-size: 14px;
+}
+.fs-12 {
+  font-size: 12px;
+}
+
+.lh-2 {
+  line-height: 2;
+}
+
+.ls-2 {
+  letter-spacing: 0.02rem;
+}
+
+.text-dark-grey {
+  color: $grey-main !important;
+}
+.text-grey {
+  color: $text !important;
+}
+.text-grey-alt {
+  color: $text-alt !important;
+}
+.text-hard-grey {
+  color: $grey-alt !important;
+}
+.text-grey-dark {
+  color: $grey !important;
+}
+.text-red {
+  color: $brand !important;
+}
+.text-red-hover {
+  &:hover {
+    color: $brand !important;
+  }
+}
+.text-white-hover {
+  &:hover {
+    color: white !important;
+  }
+}
+.text-green {
+  color: $green !important;
+}
