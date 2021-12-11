@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-5">
     <div class="row">
       <div class="col-12">
         <alert :type="'alert-info'">Test Banner/Alert</alert>
@@ -8,19 +8,52 @@
           </alert>
         </div>
       </div>
-      <div class="col-12 col-lg-6">
-        <su-info-box>
-
-        </su-info-box>
+    </div>
+    <div class="row">
+      <div class="col-11">
+        <su-dashboard-chart></su-dashboard-chart>
       </div>
-      <div class="col-12 col-lg-6">
-        <su-info-box>
+    </div>
+    <div class="row mt-4">
+      <!-- Double mt-4 because the above boxes have weird sizing issues. Oh well... -->
+      <div class="col-12 mt-4"><h3>Income</h3></div>
+    </div>
+    <div class="row">
 
-        </su-info-box>
+      <div class="col-12 col-lg-4">
+        <su-profit-box>
+
+        </su-profit-box>
+      </div>
+      <div class="col-12 col-lg-4">
+        <su-revenue-box>
+
+        </su-revenue-box>
+      </div>
+      <div class="col-12 col-lg-4">
+        <su-order-box>
+
+        </su-order-box>
       </div>
     </div>
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 mt-4"><h3>Expenses</h3></div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-lg-4">
+        <su-cogs-box>
+
+        </su-cogs-box>
+      </div>
+      <div class="col-12 col-lg-4">
+        <su-marketing-expenses-box>
+
+        </su-marketing-expenses-box>
+      </div>
+      <div class="col-12 col-lg-4">
+        <su-recurring-expenses-box>
+
+        </su-recurring-expenses-box>
       </div>
     </div>
   </div>
@@ -29,10 +62,20 @@
 <script>
 import Alert from '../components/Alert'
 import SuInfoBox from "@/components/SuInfoBox";
+import SuRevenueBox from "@/components/SuRevenueBox";
+import SuProfitBox from "@/components/SuProfitBox";
+import SuOrderBox from "@/components/SuOrderBox";
+import SuCogsBox from "@/components/SuCogsBox";
+import SuMarketingExpensesBox from "@/components/SuMarketingExpensesBox";
+import SuRecurringExpensesBox from "@/components/SuRecurringExpensesBox";
+import SuDashboardChart from "@/components/SuDashboardChart";
 
 export default {
   name: 'Dashboard',
-  components: {SuInfoBox, Alert },
+  components: {
+    SuDashboardChart,
+    SuRecurringExpensesBox,
+    SuMarketingExpensesBox, SuCogsBox, SuOrderBox, SuProfitBox, SuRevenueBox, SuInfoBox, Alert },
   layout: 'dashboard',
   transition: 'fade',
   head() {
@@ -42,6 +85,7 @@ export default {
   },
   data() {
     return {
+      notices: [],
     }
   },
   methods: {

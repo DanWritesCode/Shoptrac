@@ -11,7 +11,7 @@
       </n-link>
     </h1>
     <p class="text-grey font-weight-bold fs-14">
-      <a href="" class="text-green"> Welcome, Username </a>
+      <a href="" class="text-blue"> Welcome, Username </a>
     </p>
   </div>
 </template>c
