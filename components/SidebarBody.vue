@@ -22,7 +22,7 @@
               :icon="['fas', 'sitemap']"
               class="mr-3 fa-lg fa-fw"
           />
-          Item Sales
+          Store Products
         </n-link>
       </li>
 
@@ -44,7 +44,7 @@
               :icon="['fas', 'user']"
               class="mr-3 fa-lg fa-fw"
           />
-          Customer Sales
+          Customer Information
         </n-link>
       </li>
 
@@ -99,7 +99,7 @@
                     :icon="['fas', 'rectangle-ad']"
                     class="mr-3 fa-lg fa-fw"
                 />
-                <span class="label">Marking Platforms</span>
+                <span class="label">Marketing Platforms</span>
               </n-link>
             </div>
             <div class="sidebar-item">

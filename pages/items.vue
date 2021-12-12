@@ -16,17 +16,22 @@
     </div>
     <div class="row">
       <!-- Double mt-4 because the above boxes have weird sizing issues. Oh well... -->
-      <div class="col-12 mt-4"><h3>Item Sales Information</h3></div>
+      <div class="col-12 mt-4"><h3>Store Products</h3></div>
     </div>
     <div class="row">
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-4">
         <su-multiline-info-box title="Average Item Price" :data="aip">
         </su-multiline-info-box>
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-4">
+        <su-multiline-info-box title="Items per Order" :data="inv">
+        </su-multiline-info-box>
+      </div>
+      <div class="col-12 col-lg-4">
         <su-multiline-info-box title="Inventory Value" :data="inv">
         </su-multiline-info-box>
       </div>
+
     </div>
     <div class="row mt-4">
       <div class="col-12 col-lg-6">
@@ -37,8 +42,6 @@
         <su-list-box title="Top Selling Collections" :data="inv">
         </su-list-box>
       </div>
-      <!-- Top Selling Items -->
-      <!-- Top Selling Collections -->
     </div>
   </div>
 </template>

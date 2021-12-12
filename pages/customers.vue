@@ -16,10 +16,39 @@
     </div>
     <div class="row">
       <!-- Double mt-4 because the above boxes have weird sizing issues. Oh well... -->
-      <div class="col-12 mt-4"><h3>Data...</h3></div>
+      <div class="col-12 mt-4"><h3>Customer Information</h3></div>
     </div>
     <div class="row">
+      <!-- Total Customers -->
+      <div class="col-12 col-lg-3">
+        <su-multiline-info-box title="Total Customers" :data="totalCustomers">
+        </su-multiline-info-box>
+      </div>
 
+      <!-- New Customers -->
+      <div class="col-12 col-lg-3">
+        <su-multiline-info-box title="New Customers" :data="newCustomers">
+        </su-multiline-info-box>
+      </div>
+
+      <!-- Returning Customers -->
+      <div class="col-12 col-lg-3">
+        <su-multiline-info-box title="Returning Customers" :data="returningCustomers">
+        </su-multiline-info-box>
+      </div>
+
+      <!-- Customer Spending Range -->
+      <div class="col-12 col-lg-3">
+        <su-multiline-info-box title="Customer Spending Range" :data="customerSpendRange">
+        </su-multiline-info-box>
+      </div>
+    </div>
+    <!-- Customer List (Name, Orders, Amount Spent, Returning or New) -->
+    <div class="row mt-4">
+      <div class="col-12 col-lg-12">
+        <su-list-box title="Customer List" :data="inv">
+        </su-list-box>
+      </div>
     </div>
   </div>
 </template>
@@ -27,10 +56,12 @@
 <script>
 import Alert from '../components/Alert'
 import SuDashboardChart from "@/components/SuDashboardChart";
+import SuMultilineInfoBox from "@/components/SuMultilineInfoBox";
+import SuListBox from "@/components/SuListBox";
 
 export default {
   name: 'Customers',
-  components: { SuDashboardChart, Alert },
+  components: {SuListBox, SuMultilineInfoBox, SuDashboardChart, Alert },
   layout: 'dashboard',
   transition: 'fade',
   head() {
@@ -41,6 +72,10 @@ export default {
   data() {
     return {
       notices: [],
+      totalCustomers: {"Total Customers": 0},
+      newCustomers: {"New Customers": 0},
+      returningCustomers: {"Returning Customers": 0},
+      customerSpendRange: {"Highest Spender": 0, "Lowest Spender": 0},
     }
   },
   methods: {

@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="mb-4" v-for="(key, val) in data">
-      <su-info-item :name="key" :val="val" status="is-blue">
+      <su-info-item :name="key" :val="val" :colorClass="colorClass">
       </su-info-item>
     </div>
   </div>
@@ -39,6 +39,10 @@ export default {
     data: {
       type: Array,
       default: {}
+    },
+    colorClass: {
+      type: String,
+      default: "is-blue"
     }
   }
 }

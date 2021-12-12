@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="mb-4">
-      <su-info-item name="test" status="Pending" time="5123512">
+      <su-info-item name="test" colorClass="is-red" time="5123512">
       </su-info-item>
     </div>
   </div>

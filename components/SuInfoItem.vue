@@ -1,7 +1,7 @@
 <template>
   <div class="row align-items-center align-content-center py-2">
     <div class="col-5">
-      <p :class="status + '-text'" class="d-inline font-weight-bold fs-14">
+      <p :class="colorClass + '-text'" class="d-inline font-weight-bold fs-14">
         {{ name }}
       </p>
     </div>
@@ -26,7 +26,7 @@ export default {
       type: String,
       default: ''
     },
-    status: {
+    colorClass: {
       type: String,
       default: 'is-red'
     }
@@ -34,7 +34,6 @@ export default {
   data() {
     return {
       isToggled: false,
-      currentColor: 'is-red',
       statusMessage: '',
     }
   },

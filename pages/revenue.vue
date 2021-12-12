@@ -16,10 +16,12 @@
     </div>
     <div class="row">
       <!-- Double mt-4 because the above boxes have weird sizing issues. Oh well... -->
-      <div class="col-12 mt-4"><h3>Data...</h3></div>
+      <div class="col-12 mt-4"><h3>Revenue</h3></div>
     </div>
     <div class="row">
-
+      <div class="col-12 col-lg-10">
+        <su-list-box title="Store Revenue" :data="revenueData" color-class="is-green"></su-list-box>
+      </div>
     </div>
   </div>
 </template>
@@ -27,10 +29,11 @@
 <script>
 import Alert from '../components/Alert'
 import SuDashboardChart from "@/components/SuDashboardChart";
+import SuListBox from "@/components/SuListBox";
 
 export default {
   name: 'Revenue',
-  components: { SuDashboardChart, Alert },
+  components: {SuListBox, SuDashboardChart, Alert },
   layout: 'dashboard',
   transition: 'fade',
   head() {
@@ -41,6 +44,7 @@ export default {
   data() {
     return {
       notices: [],
+      revenueData: {"Item Sales": 6512, "Shipping Charged": 111, "Taxes Collected": 69.69, "Tips": 0.69}
     }
   },
   methods: {

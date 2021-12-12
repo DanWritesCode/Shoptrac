@@ -19,7 +19,9 @@
       <div class="col-12 mt-4"><h3>Data...</h3></div>
     </div>
     <div class="row">
-
+      <div class="col-12 col-lg-10">
+        <su-list-box title="Store Expenses" :data="expensesData" color-class="is-red"></su-list-box>
+      </div>
     </div>
   </div>
 </template>
@@ -27,10 +29,11 @@
 <script>
 import Alert from '../components/Alert'
 import SuDashboardChart from "@/components/SuDashboardChart";
+import SuListBox from "@/components/SuListBox";
 
 export default {
   name: 'Expenses',
-  components: { SuDashboardChart, Alert },
+  components: {SuListBox, SuDashboardChart, Alert },
   layout: 'dashboard',
   transition: 'fade',
   head() {
@@ -41,6 +44,8 @@ export default {
   data() {
     return {
       notices: [],
+      expensesData: {"COGS (Product)": 6512, "COGS (Shipping)": 111, "Taxes Forwarded": 69.69, "Marketing (Facebook)": 420.69, "Marketing (TikTok)": 420.69}
+
     }
   },
   methods: {

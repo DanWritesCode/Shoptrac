@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="content-box">
-      <su-info-item name="test" status="Pending" time="5123512">
+      <su-info-item name="test" colorClass="is-blue" time="5123512">
       </su-info-item>
     </div>
     <div v-if="hasMore" class="row align-content-end justify-content-end">
