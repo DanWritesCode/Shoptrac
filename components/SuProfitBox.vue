@@ -1,24 +1,24 @@
 <template>
-  <div class="card bg-box p-lg-4 p-3 h-100">
+  <div class="card bg-box p-4 p-3 mb-5 mb-md-0">
     <div class="row text-center">
       <div class="mx-auto">
-        <h5>Profit/Loss Breakdown</h5>
+        <p class="ff-poppins-sb fs-18">Profit/Loss Breakdown</p>
       </div>
     </div>
-    <div class="row align-items-center mb-lg-3 mt-2">
-      <div class="col-lg-8 d-none d-lg-block">
+    <div class="row align-items-center mb-3 mt-2">
+      <div class="col-6">
         <h1 class="text-green">$1234.56</h1>
       </div>
-      <div class="col-12 col-lg-4 text-lg-right text-left order-lg-last order-first">
+      <div class="col-6 text-right order-last order-first">
         <span class="ff-poppins-sb fs-18">Profit (USD)</span>
       </div>
     </div>
 
-    <div class="row align-items-center mb-lg-1">
-      <div class="col-lg-8 d-none d-lg-block">
+    <div class="row align-items-center mb-1">
+      <div class="col-6">
         <h1 class="text-green">22.8%</h1>
       </div>
-      <div class="col-12 col-lg-4 text-lg-right text-left order-lg-last order-first">
+      <div class="col-6 text-right order-last order-first">
         <span class="ff-poppins-sb fs-18">Profit Margin (%)</span>
       </div>
     </div>

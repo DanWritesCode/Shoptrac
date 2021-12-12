@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-5">
+  <div>
     <div class="row">
       <div class="col-12">
         <alert :type="'alert-info'">Test Banner/Alert</alert>
@@ -9,8 +9,8 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-11">
+    <div class="row mw-100 mr-0">
+      <div class="col-12 mr-0 pr-0">
         <su-dashboard-chart></su-dashboard-chart>
       </div>
     </div>

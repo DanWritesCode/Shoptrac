@@ -6,7 +6,7 @@
     <div id="content">
       <db-navbar></db-navbar>
       <div id="wrapper">
-        <div class="container-fluid">
+        <div class="container-fluid p-4">
           <nuxt />
         </div>
       </div>
