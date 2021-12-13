@@ -20,7 +20,7 @@
     </div>
     <div class="row">
       <div class="col-12 col-lg-10">
-        <su-list-box title="Store Expenses" :data="expensesData" color-class="is-red"></su-list-box>
+        <su-list-box title="Store Expenses" :columns="expensesColumns" :data="expensesData" color-class="is-red"></su-list-box>
       </div>
     </div>
   </div>
@@ -44,8 +44,8 @@ export default {
   data() {
     return {
       notices: [],
-      expensesData: {"COGS (Product)": 6512, "COGS (Shipping)": 111, "Taxes Forwarded": 69.69, "Marketing (Facebook)": 420.69, "Marketing (TikTok)": 420.69}
-
+      expensesData: [{0: 6512, 1:111, 2:69.69, 3:0.69}],
+      expensesColumns: ["COGS (Product)", "COGS (Shipping)", "Taxes Forwarded", "Marketing"]
     }
   },
   methods: {

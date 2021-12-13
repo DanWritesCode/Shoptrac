@@ -7,20 +7,12 @@
     </div>
 
     <div class="row align-items-center mt-2">
-      <div class="col-5">
-        <span class="ls-2 ff-poppins-sb">Name</span>
-      </div>
-      <div class="d-none d-bp d-xl-block col-lg-4">
-        <span class="ls-2 ff-poppins-sb">
-          Units Sold
-        </span>
-      </div>
-      <div class="col-lg-3 col-md-2 d-none d-lg-block">
-        <span class="ls-2 ff-poppins-sb">Total Revenue</span>
+      <div class="col text-center" v-for="colName in columns">
+        <span class="ls-2 ff-poppins-sb">{{ colName }}</span>
       </div>
     </div>
-    <div class="mb-4" v-for="(key, val) in data">
-      <su-info-item :name="key" :val="val" :colorClass="colorClass">
+    <div class="mb-4" v-for="(val) in data">
+      <su-info-item :data="val" :colorClass="colorClass">
       </su-info-item>
     </div>
   </div>
@@ -38,11 +30,15 @@ export default {
     },
     data: {
       type: Array,
-      default: {}
+      default: []
     },
     colorClass: {
       type: String,
       default: "is-blue"
+    },
+    columns: {
+      type: Array,
+      default: []
     }
   }
 }
