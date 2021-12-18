@@ -21,19 +21,18 @@
     <div class="row">
 
       <div class="col-12 col-lg-4">
-        <su-profit-box>
+        <su-dashboard-box title="Profit Breakdown" :data="profitBreakdown" color="text-green">
 
-        </su-profit-box>
+        </su-dashboard-box>
       </div>
       <div class="col-12 col-lg-4">
-        <su-revenue-box>
+        <su-dashboard-box title="Revenue Breakdown" :data="revenueBreakdown">
 
-        </su-revenue-box>
+        </su-dashboard-box>
       </div>
       <div class="col-12 col-lg-4">
-        <su-order-box>
-
-        </su-order-box>
+        <su-dashboard-box title="Order Breakdown" :data="orderBreakdown">
+        </su-dashboard-box>
       </div>
     </div>
     <div class="row">
@@ -41,19 +40,19 @@
     </div>
     <div class="row">
       <div class="col-12 col-lg-4">
-        <su-cogs-box>
+        <su-dashboard-expense-box color="text-red" title="Cost of Goods Sold" :columns="cogsCostCol" :data="cogsCost">
 
-        </su-cogs-box>
+        </su-dashboard-expense-box>
       </div>
       <div class="col-12 col-lg-4">
-        <su-marketing-expenses-box>
+        <su-dashboard-expense-box color="text-red" title="Marketing Costs" :columns="marketingCostCol" :data="marketingCost">
 
-        </su-marketing-expenses-box>
+        </su-dashboard-expense-box>
       </div>
       <div class="col-12 col-lg-4">
-        <su-recurring-expenses-box>
+        <su-dashboard-expense-box  color="text-red" title="Recurring Costs" :columns="recurringCostCol" :data="recurringCost">
 
-        </su-recurring-expenses-box>
+        </su-dashboard-expense-box >
       </div>
     </div>
   </div>
@@ -61,21 +60,16 @@
 
 <script>
 import Alert from '../components/Alert'
-import SuInfoBox from "@/components/SuInfoBox";
-import SuRevenueBox from "@/components/SuRevenueBox";
-import SuProfitBox from "@/components/SuProfitBox";
-import SuOrderBox from "@/components/SuOrderBox";
-import SuCogsBox from "@/components/SuCogsBox";
-import SuMarketingExpensesBox from "@/components/SuMarketingExpensesBox";
-import SuRecurringExpensesBox from "@/components/SuRecurringExpensesBox";
 import SuDashboardChart from "@/components/SuDashboardChart";
+import SuDashboardBox from "@/components/SuMultilineInfoBox";
+import SuDashboardExpenseBox from "@/components/SuDashboardExpenseBox";
 
 export default {
   name: 'Dashboard',
   components: {
-    SuDashboardChart,
-    SuRecurringExpensesBox,
-    SuMarketingExpensesBox, SuCogsBox, SuOrderBox, SuProfitBox, SuRevenueBox, SuInfoBox, Alert },
+    SuDashboardExpenseBox,
+    SuDashboardBox,
+    SuDashboardChart, Alert },
   layout: 'dashboard',
   transition: 'fade',
   head() {
@@ -86,6 +80,17 @@ export default {
   data() {
     return {
       notices: [],
+      orderBreakdown: {"Orders": 524, "Average Order Value": "$112.43"},
+      revenueBreakdown: {"Revenue": "$51,225.25", "Expenses": "$25,512.12"},
+      profitBreakdown: {"Profit (USD)": "$1,234.56", "Profit Margin": "55.5%"},
+
+      cogsCostCol: ["Expense", "Amount", "% Revenue"],
+      marketingCostCol: ["Platform", "Spend", "% Revenue"],
+      recurringCostCol: ["Expense", "Amount", "% Revenue"],
+
+      cogsCost: [{0: "Items Sold", 1: "$4444.44", 2: "22.8%"}],
+      marketingCost: [{0: "Facebook", 1: "$2222.22", 2: "11.4%"}],
+      recurringCost: [{0: "Shopify Plan", 1: "$29.99", 2: "0.8%"}]
     }
   },
   methods: {

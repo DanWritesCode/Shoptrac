@@ -29,6 +29,9 @@
 .fs-24 {
   font-size: 24px;
 }
+.fs-20 {
+  font-size: 20px;
+}
 .fs-18 {
   font-size: 18px;
 }
@@ -66,7 +69,7 @@
   color: $grey !important;
 }
 .text-red {
-  color: $brand !important;
+  color: #f93b3b !important;
 }
 .text-red-hover {
   &:hover {

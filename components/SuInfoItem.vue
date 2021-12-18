@@ -1,7 +1,7 @@
 <template>
   <div class="row align-items-center align-content-center py-2" :class="centerText ? 'text-center' : ''">
     <div class="col" v-for="x in data">
-      <p class="d-inline">{{x}}</p>
+      <p class="d-inline fs-16" :class="color">{{x}}</p>
     </div>
 
   </div>
@@ -18,9 +18,9 @@ export default {
       type: String,
       default: ''
     },
-    colorClass: {
+    color: {
       type: String,
-      default: 'is-red'
+      default: 'is-white'
     },
     centerText: {
       type: Boolean,

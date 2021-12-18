@@ -11,9 +11,8 @@
         <span class="ls-2 ff-poppins-sb">{{ colName }}</span>
       </div>
     </div>
-    <div class="mb-4" v-for="(val) in data">
-      <su-info-item :data="val" :colorClass="colorClass">
-      </su-info-item>
+    <div class="mb-4">
+      <su-info-item :data="val" :colorClass="colorClass" v-for="(val) in data"></su-info-item>
     </div>
   </div>
 </template>

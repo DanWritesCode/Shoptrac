@@ -21,19 +21,13 @@
     <div class="row">
       <!-- Total Customers -->
       <div class="col-12 col-lg-3">
-        <su-multiline-info-box title="Total Customers" :data="totalCustomers">
+        <su-multiline-info-box title="Total Customers" :data="totalCustomers" class="h-100">
         </su-multiline-info-box>
       </div>
 
-      <!-- New Customers -->
+      <!-- New & Returning Customers -->
       <div class="col-12 col-lg-3">
-        <su-multiline-info-box title="New Customers" :data="newCustomers">
-        </su-multiline-info-box>
-      </div>
-
-      <!-- Returning Customers -->
-      <div class="col-12 col-lg-3">
-        <su-multiline-info-box title="Returning Customers" :data="returningCustomers">
+        <su-multiline-info-box title="New vs Returning Customers" :data="newReturningCustomers">
         </su-multiline-info-box>
       </div>
 
@@ -45,7 +39,7 @@
     </div>
     <!-- Customer List (Name, Orders, Amount Spent, Returning or New) -->
     <div class="row mt-4">
-      <div class="col-12 col-lg-12">
+      <div class="col-12 col-lg-9">
         <su-list-box title="Customer List" :data="inv">
         </su-list-box>
       </div>
@@ -73,8 +67,7 @@ export default {
     return {
       notices: [],
       totalCustomers: {"Total Customers": 0},
-      newCustomers: {"New Customers": 0},
-      returningCustomers: {"Returning Customers": 0},
+      newReturningCustomers: {"New Customers": 0, "Returning Customers": 0},
       customerSpendRange: {"Highest Spender": 0, "Lowest Spender": 0},
     }
   },
