@@ -36,7 +36,7 @@ func RequestAccessToken(shopName, clientId, clientSecret, code string) (data.Sho
 	jsonDat := map[string]string{"client_id": clientId, "client_secret": clientSecret, "code": code}
 	cereal, _ := json.Marshal(jsonDat)
 
-	r, _ := http.NewRequest("POST", fmt.Sprintf("https://%v.myshopify.com/admin/oauth/access_token", shopName), bytes.NewBuffer(cereal))
+	r, _ := http.NewRequest("POST", fmt.Sprintf("%vadmin/oauth/access_token", shopName), bytes.NewBuffer(cereal))
 	res, err := Client.Do(r)
 	if err != nil {
 		return sat, err
