@@ -13,14 +13,20 @@ type DBConfig struct {
 	Database string `json:"database,omitempty"`
 }
 
+type AppConfig struct {
+	ClientId     string `json:"client_id,omitempty"`
+	ClientSecret string `json:"client_secret,omitempty"`
+}
+
 // Config holds configuration data for the API.
 type Config struct {
-  Host    string         `json:"host,omitempty"`
-	Port    int            `json:"port,omitempty"`
-	Debug   bool           `json:"debug,omitempty"`
-	Timeout int            `json:"timeout,omitempty"`
-	LogFile string         `json:"log_file,omitempty"`
-	DB      *DBConfig      `json:"db,omitempty"`
+	Host    string     `json:"host,omitempty"`
+	Port    int        `json:"port,omitempty"`
+	Debug   bool       `json:"debug,omitempty"`
+	Timeout int        `json:"timeout,omitempty"`
+	LogFile string     `json:"log_file,omitempty"`
+	DB      *DBConfig  `json:"db,omitempty"`
+	App     *AppConfig `json:"app,omitempty"`
 }
 
 var cfg *Config

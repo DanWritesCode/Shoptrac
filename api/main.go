@@ -2,10 +2,11 @@ package main
 
 import (
 	"./config"
+	"./database"
 	"./logging"
+	"./shopify"
 	"fmt"
 	_ "github.com/Go-SQL-Driver/MySQL"
-	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"runtime"
@@ -13,7 +14,6 @@ import (
 )
 
 // DB is the exported DB value
-var DB *sqlx.DB
 var log *logrus.Logger
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 		return
 	}
 
-	//fireproxies.InitGlobals()
+	shopify.SetupClient()
 
 	err = logging.SetLogPath(cfg.LogFile)
 	if err != nil {
@@ -39,8 +39,8 @@ func main() {
 		logging.SetLevel(logging.DebugLevel)
 	}
 
-	ConnectToDB(cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Database)
-	defer CloseDB()
+	database.ConnectToDB(cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Database)
+	defer database.CloseDB()
 
 	//limit = limiter.NewConcurrencyLimiter(2000)
 
