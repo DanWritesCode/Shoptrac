@@ -4,6 +4,7 @@ import (
 	"../config"
 	"../data"
 	"../database"
+	"../logging"
 	"../response"
 	"../shopify"
 	"encoding/json"
@@ -29,21 +30,25 @@ func PostInstall(w http.ResponseWriter, r *http.Request) {
 			// insert AT into DB
 			err := database.SetDatabaseConfig("shopAccessToken", sat.AccessToken)
 			if err != nil {
+				logging.GetLogger().Println("Unable to set database config (1) - " + err.Error())
 				response.BadRequest(w, "Shopify Installation Failed - Database Insert")
 				return
 			}
 
 			err = database.SetDatabaseConfig("shopScope", sat.Scope)
 			if err != nil {
+				logging.GetLogger().Println("Unable to set database config (2) - " + err.Error())
 				response.BadRequest(w, "Shopify Installation Failed - Database Insert")
 				return
 			}
 
 			response.DefaultResponse(w, 200, map[string]string{"message": "Installation Success"})
 		} else {
+			logging.GetLogger().Println("Unable to obtain access token from Shopify - " + err.Error())
 			response.BadRequest(w, "Shopify Installation Failed")
 		}
 	} else {
+		logging.GetLogger().Println("Spotify Security Check Failed. URL: " + id.URL + "  Nonce: " + id.Nonce + "  HMAC: " + id.HMAC + "  Shop: " + id.Shop + "  Host: " + id.Host)
 		response.BadRequest(w, "Shopify Security Check Failed")
 	}
 }
