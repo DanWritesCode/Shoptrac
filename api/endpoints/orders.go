@@ -1,10 +1,26 @@
 package endpoints
 
 import (
-  "net/http"
+	"../data"
+	"../response"
+
+	"net/http"
 )
 
-func GetOrders (w http.ResponseWriter, r *http.Request) {
+func GetOrders(w http.ResponseWriter, r *http.Request) {
 
-  //response.JSON(w, 200, s)
+	s := data.Orders{
+		Orders:            20,
+		AverageOrderValue: 55.55,
+		OrderMargin:       31.12,
+		Refunds:           28.95,
+		OrderList: []data.Order{{
+			OrderID: 1337,
+			Items:   1,
+			Country: "Canada",
+			Amount:  28.95,
+			COGS:    15.55,
+		}},
+	}
+	response.JSON(w, 200, s)
 }

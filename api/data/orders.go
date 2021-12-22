@@ -10,9 +10,9 @@ type Orders struct {
 }
 
 type Order struct {
-	Items        int     `json:"items"`
-	CustomerName string  `json:"customerName"`
-	Country      string  `json:"country"`
-	Amount       float64 `json:"amount"`
-	COGS         float64 `json:"cogs"`
+	OrderID int     `json:"orderId"`
+	Items   int     `json:"items"`
+	Country string  `json:"country"`
+	Amount  float64 `json:"amount"`
+	COGS    float64 `json:"cogs"`
 }

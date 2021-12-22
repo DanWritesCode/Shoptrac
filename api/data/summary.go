@@ -1,10 +1,11 @@
 package data
 
 type Summary struct {
-	Revenue      float64 `json:"username"`
-	Profit       float64 `json:"password"`
-	ProfitMargin float64 `json:"address"`
-	Orders       int     `json:"database"`
+	Revenue      float64 `json:"revenue"`
+	Expenses     float64 `json:"expenses"`
+	Profit       float64 `json:"profit"`
+	ProfitMargin float64 `json:"profitMargin"`
+	Orders       int     `json:"orders"`
 	AOV          float64 `json:"aov"`
 
 	COGS           []Trio `json:"cogs"`

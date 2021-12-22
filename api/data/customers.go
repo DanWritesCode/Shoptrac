@@ -12,6 +12,7 @@ type Customers struct {
 
 type Customer struct {
 	Name        string  `json:"name"`
+	Country     string  `json:"country"`
 	OrdersMade  int     `json:"ordersMade"`
 	AmountSpent float64 `json:"amountSpent"`
 }
