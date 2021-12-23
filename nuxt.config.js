@@ -19,6 +19,11 @@ export default {
     ]
   },
 
+  /* proxy the golang API server while in development */
+  proxy: {
+    '/api/': { target: 'http://localhost:8000', pathRewrite: {'^/api/': ''} }
+  },
+
   /*
    ** Customize the progress-bar color
    */
@@ -60,7 +65,9 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    proxy: true
+  },
   /*
    ** Build configuration
    */

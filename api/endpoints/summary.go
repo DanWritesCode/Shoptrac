@@ -9,6 +9,7 @@ import (
 func GetSummary(w http.ResponseWriter, r *http.Request) {
 	s := data.Summary{
 		Revenue:      51225.25,
+		Expenses:     8555.55,
 		Profit:       1234.56,
 		ProfitMargin: 55.5,
 		Orders:       524,

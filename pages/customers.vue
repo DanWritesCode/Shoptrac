@@ -40,7 +40,7 @@
     <!-- Customer List (Name, Orders, Amount Spent, Returning or New) -->
     <div class="row mt-4">
       <div class="col-12 col-lg-9">
-        <su-list-box title="Customer List" :data="inv">
+        <su-list-box title="Most Valuable Customers" :columns="customersCol" :data="customers">
         </su-list-box>
       </div>
     </div>
@@ -52,6 +52,7 @@ import Alert from '../components/Alert'
 import SuDashboardChart from "@/components/SuDashboardChart";
 import SuMultilineInfoBox from "@/components/SuMultilineInfoBox";
 import SuListBox from "@/components/SuListBox";
+import {API_URL} from "@/config";
 
 export default {
   name: 'Customers',
@@ -63,16 +64,42 @@ export default {
       title: 'StonksUp | Customers'
     }
   },
+  async mounted() {
+    await this.$axios
+        .$get(`${API_URL}/customers`, {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
+        })
+        .then((res) => {
+          this.data = res;
+          this.populate(res);
+        })
+        .catch((res) => {
+        })
+  },
   data() {
     return {
       notices: [],
       totalCustomers: {"Total Customers": 0},
       newReturningCustomers: {"New Customers": 0, "Returning Customers": 0},
       customerSpendRange: {"Highest Spender": 0, "Lowest Spender": 0},
+      customersCol: ["Customer Name", "Country", "Orders Placed", "Total Amount Spent"],
+      customers: [{}],
     }
   },
   methods: {
+    populate(data) {
+      this.totalCustomers = {"Total Customers": data.totalCustomers};
+      this.newReturningCustomers = {"New Customers": data.newCustomers, "Returning Customers": data.returningCustomers};
+      this.customerSpendRange = {"Highest Spender": "$" + data.highestSpender, "Lowest Spender": "$" + data.lowestSpender};
 
+      this.customers = data.topCustomerList;
+      for(let i = 0; i < this.customers.length; i++) {
+        this.customers[i].amountSpent = "$" + this.customers[i].amountSpent.toFixed(2).toLocaleString();
+
+      }
+    }
   }
 }
 </script>

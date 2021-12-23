@@ -63,6 +63,7 @@ import Alert from '../components/Alert'
 import SuDashboardChart from "@/components/SuDashboardChart";
 import SuDashboardBox from "@/components/SuMultilineInfoBox";
 import SuDashboardExpenseBox from "@/components/SuDashboardExpenseBox";
+import {API_URL} from "@/config";
 
 export default {
   name: 'Dashboard',
@@ -77,24 +78,59 @@ export default {
       title: 'StonksUp | Dashboard'
     }
   },
+  async mounted() {
+    await this.$axios
+        .$get(`${API_URL}/summary`, {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
+        })
+        .then((res) => {
+          this.populateDashboardSummary(res);
+        })
+        .catch((res) => {
+        })
+  },
   data() {
     return {
+      summaryData: {},
       notices: [],
-      orderBreakdown: {"Orders": 524, "Average Order Value": "$112.43"},
-      revenueBreakdown: {"Revenue": "$51,225.25", "Expenses": "$25,512.12"},
-      profitBreakdown: {"Profit (USD)": "$1,234.56", "Profit Margin": "55.5%"},
+      orderBreakdown: {},
+      revenueBreakdown: {},
+      profitBreakdown: {},
 
       cogsCostCol: ["Expense", "Amount", "% Revenue"],
       marketingCostCol: ["Platform", "Spend", "% Revenue"],
       recurringCostCol: ["Expense", "Amount", "% Revenue"],
 
-      cogsCost: [{0: "Items Sold", 1: "$4444.44", 2: "22.8%"}],
-      marketingCost: [{0: "Facebook", 1: "$2222.22", 2: "11.4%"}],
-      recurringCost: [{0: "Shopify Plan", 1: "$29.99", 2: "0.8%"}]
+      cogsCost: [],
+      marketingCost: [],
+      recurringCost: []
     }
   },
   methods: {
+    populateDashboardSummary(summaryData) {
+      this.orderBreakdown = {"Orders": summaryData.orders, "Average Order Value": "$" + summaryData.aov.toLocaleString()}
+      this.revenueBreakdown = {"Revenue": "$" + summaryData.revenue.toLocaleString(), "Expenses": "$" + summaryData.expenses.toLocaleString()}
+      this.profitBreakdown = {"Profit (USD)": "$" + summaryData.profit.toLocaleString(), "Profit Margin": summaryData.profitMargin + "%"}
 
+      this.cogsCost = summaryData.cogs;
+      for(let i = 0; i < this.cogsCost.length; i++) {
+        this.cogsCost[i].amount = "$" + this.cogsCost[i].amount.toLocaleString();
+        this.cogsCost[i].percentage += "%";
+      }
+      this.marketingCost = summaryData.marketing;
+      for(let i = 0; i < this.marketingCost.length; i++) {
+        this.marketingCost[i].amount = "$" + this.marketingCost[i].amount.toLocaleString();
+        this.marketingCost[i].percentage += "%";
+      }
+      this.recurringCost = summaryData.recurringCosts;
+      for(let i = 0; i < this.recurringCost.length; i++) {
+        this.recurringCost[i].amount = "$" + this.recurringCost[i].amount.toFixed(2).toLocaleString();
+        this.recurringCost[i].percentage += "%";
+      }
+
+    }
   }
 }
 </script>

@@ -30,6 +30,7 @@
 import Alert from '../components/Alert'
 import SuDashboardChart from "@/components/SuDashboardChart";
 import SuListBox from "@/components/SuListBox";
+import {API_URL} from "@/config";
 
 export default {
   name: 'Revenue',
@@ -44,9 +45,27 @@ export default {
   data() {
     return {
       notices: [],
-      revenueData: [{0: 6512, 1:111, 2:69.69, 3:0.69}],
+      revenueData: [{}],
       revenueColumns: ["Item Sales", "Shipping Charged", "Taxes Collected", "Tips"]
     }
+  },
+  async mounted() {
+    await this.$axios
+        .$get(`${API_URL}/revenue`, {
+          headers: {
+            Authorization: localStorage.getItem('token')
+          }
+        })
+        .then((res) => {
+          res.sales = "$" + res.sales.toFixed(2).toLocaleString();
+          res.shippingCharged = "$" + res.shippingCharged.toFixed(2).toLocaleString();
+          res.taxesCollected = "$" + res.taxesCollected.toFixed(2).toLocaleString();
+          res.tips = "$" + res.tips.toFixed(2).toLocaleString();
+
+          this.revenueData = [res];
+        })
+        .catch((res) => {
+        })
   },
   methods: {
 
