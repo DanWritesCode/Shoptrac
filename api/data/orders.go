@@ -11,6 +11,7 @@ type Orders struct {
 
 type Order struct {
 	OrderID int     `json:"orderId"`
+	Date    int64   `json:"date"`
 	Items   int     `json:"items"`
 	Country string  `json:"country"`
 	Amount  float64 `json:"amount"`
