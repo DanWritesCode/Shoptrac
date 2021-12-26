@@ -16,6 +16,7 @@ type DBConfig struct {
 type AppConfig struct {
 	ClientId     string `json:"client_id,omitempty"`
 	ClientSecret string `json:"client_secret,omitempty"`
+  RedirectURL string `json:"redirect_url,omitempty"`
 }
 
 // Config holds configuration data for the API.

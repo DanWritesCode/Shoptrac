@@ -28,6 +28,7 @@ func main() {
 	}
 
 	shopify.SetupClient()
+  shopify.NewShopify(cfg.App.ClientId, cfg.App.ClientSecret, cfg.App.RedirectURL)
 
 	err = logging.SetLogPath(cfg.LogFile)
 	if err != nil {

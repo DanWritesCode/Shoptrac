@@ -2,7 +2,7 @@ package data
 
 type InstallData struct {
 	URL      string `json:"url,omitempty"`
-	AuthCode string `json:"authCode,omitempty"`
+	AuthCode string `json:"code,omitempty"`
 	HMAC     string `json:"hmac,omitempty"`
 	Shop     string `json:"shop,omitempty"`
 	Host     string `json:"host,omitempty"`

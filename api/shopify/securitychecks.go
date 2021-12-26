@@ -36,7 +36,10 @@ func RequestAccessToken(shopName, clientId, clientSecret, code string) (data.Sho
 	jsonDat := map[string]string{"client_id": clientId, "client_secret": clientSecret, "code": code}
 	cereal, _ := json.Marshal(jsonDat)
 
-	r, _ := http.NewRequest("POST", fmt.Sprintf("%vadmin/oauth/access_token", shopName), bytes.NewBuffer(cereal))
+	r, _ := http.NewRequest("POST", fmt.Sprintf("https://%v/admin/oauth/access_token", shopName), bytes.NewBuffer(cereal))
+	r.Header.Add("Content-Type", "application/json")
+	r.Header.Add("User-Agent", "StonksUp App")
+
 	res, err := Client.Do(r)
 	if err != nil {
 		return sat, err
@@ -54,6 +57,10 @@ func RequestAccessToken(shopName, clientId, clientSecret, code string) (data.Sho
 		return sat, errors.New("shopify returned non-200 HTTP code")
 	}
 
+}
+
+func CheckNonce(nonce string) bool {
+  return validNonces[nonce] == true
 }
 
 func AuthorizeNonce(nonce string) {

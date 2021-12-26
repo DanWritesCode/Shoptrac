@@ -44,7 +44,6 @@ export default {
     '~/plugins/vee-validate',
     '~/plugins/fontawesome',
     '~/plugins/v-transitions',
-    '~/plugins/axios',
     '~/plugins/vue-sanitize',
 
   ],

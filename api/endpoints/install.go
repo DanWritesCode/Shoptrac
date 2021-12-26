@@ -8,22 +8,38 @@ import (
 	"../response"
 	"../shopify"
 	"encoding/json"
-	"net/http"
+  "fmt"
+  "math"
+  "math/rand"
+  "net/http"
+  "net/url"
 )
+
+func GetInstall(w http.ResponseWriter, r *http.Request) {
+  shopName := r.URL.Query().Get("shop")
+  nonce := fmt.Sprintf("%d", rand.Intn(math.MaxInt32))
+  shopify.AuthorizeNonce(nonce)
+
+  http.Redirect(w, r, shopify.ShopifyClient.AuthorizeUrl(shopName, nonce), http.StatusFound)
+}
 
 func PostInstall(w http.ResponseWriter, r *http.Request) {
 	id := data.InstallData{}
 	err := json.NewDecoder(r.Body).Decode(&id)
-
 	if err != nil {
 		response.Error(w, response.BadRequestError)
 		return
 	}
 
-	// temp - this will be removed once the nonce & nonce source are determined
-	shopify.AuthorizeNonce(id.Nonce)
+	if !shopify.CheckNonce(id.Nonce) {
+    response.BadRequest(w, "Shopify Security Check Failed")
+    return
+  }
 
-	if shopify.SecurityCheck(id.URL, id.Nonce, id.HMAC, id.Shop) {
+  realURL, _ := url.Parse(id.URL)
+
+	// validate the request
+	if ok, authErr := shopify.ShopifyClient.VerifyAuthorizationURL(realURL); ok {
 		// request access token from shopify
 		sat, err := shopify.RequestAccessToken(id.Shop, config.GetConfig().App.ClientId, config.GetConfig().App.ClientSecret, id.AuthCode)
 		if err == nil {
@@ -48,7 +64,11 @@ func PostInstall(w http.ResponseWriter, r *http.Request) {
 			response.BadRequest(w, "Shopify Installation Failed")
 		}
 	} else {
-		logging.GetLogger().Println("Spotify Security Check Failed. URL: " + id.URL + "  Nonce: " + id.Nonce + "  HMAC: " + id.HMAC + "  Shop: " + id.Shop + "  Host: " + id.Host)
-		response.BadRequest(w, "Shopify Security Check Failed")
+	  errMsg := ""
+	  if authErr != nil {
+      errMsg = "  Error: " + authErr.Error()
+    }
+		logging.GetLogger().Println("Spotify Authorization Check Failed. URL: " + id.URL + "  Nonce: " + id.Nonce + "  HMAC: " + id.HMAC + "  Shop: " + id.Shop + "  Host: " + id.Host + "  Error: " + errMsg)
+		response.BadRequest(w, "Shopify Authorization Check Failed")
 	}
 }
