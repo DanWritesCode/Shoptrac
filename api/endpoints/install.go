@@ -8,19 +8,19 @@ import (
 	"../response"
 	"../shopify"
 	"encoding/json"
-  "fmt"
-  "math"
-  "math/rand"
-  "net/http"
-  "net/url"
+	"fmt"
+	"math"
+	"math/rand"
+	"net/http"
+	"net/url"
 )
 
 func GetInstall(w http.ResponseWriter, r *http.Request) {
-  shopName := r.URL.Query().Get("shop")
-  nonce := fmt.Sprintf("%d", rand.Intn(math.MaxInt32))
-  shopify.AuthorizeNonce(nonce)
+	shopName := r.URL.Query().Get("shop")
+	nonce := fmt.Sprintf("%d", rand.Intn(math.MaxInt32))
+	shopify.AuthorizeNonce(nonce)
 
-  http.Redirect(w, r, shopify.ShopifyClient.AuthorizeUrl(shopName, nonce), http.StatusFound)
+	http.Redirect(w, r, shopify.ShopifyClient.AuthorizeUrl(shopName, nonce), http.StatusFound)
 }
 
 func PostInstall(w http.ResponseWriter, r *http.Request) {
@@ -32,11 +32,16 @@ func PostInstall(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !shopify.CheckNonce(id.Nonce) {
-    response.BadRequest(w, "Shopify Security Check Failed")
-    return
-  }
+		response.BadRequest(w, "Shopify Security Check Failed")
+		return
+	}
 
-  realURL, _ := url.Parse(id.URL)
+	if !shopify.CheckShopDomain(id.Shop) {
+		response.BadRequest(w, "Invalid Shopify Domain/Shop Name")
+		return
+	}
+
+	realURL, _ := url.Parse(id.URL)
 
 	// validate the request
 	if ok, authErr := shopify.ShopifyClient.VerifyAuthorizationURL(realURL); ok {
@@ -64,10 +69,10 @@ func PostInstall(w http.ResponseWriter, r *http.Request) {
 			response.BadRequest(w, "Shopify Installation Failed")
 		}
 	} else {
-	  errMsg := ""
-	  if authErr != nil {
-      errMsg = "  Error: " + authErr.Error()
-    }
+		errMsg := ""
+		if authErr != nil {
+			errMsg = "  Error: " + authErr.Error()
+		}
 		logging.GetLogger().Println("Spotify Authorization Check Failed. URL: " + id.URL + "  Nonce: " + id.Nonce + "  HMAC: " + id.HMAC + "  Shop: " + id.Shop + "  Host: " + id.Host + "  Error: " + errMsg)
 		response.BadRequest(w, "Shopify Authorization Check Failed")
 	}

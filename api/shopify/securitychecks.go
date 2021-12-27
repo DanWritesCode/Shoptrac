@@ -13,22 +13,9 @@ import (
 
 var validNonces = make(map[string]bool)
 
-func SecurityCheck(fullURL string, nonce string, hmac string, shop string) bool {
-	reg := regexp.MustCompile(`\A(https|http)://[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com/`)
-	match := reg.MatchString(shop)
-	if match {
-		if nonce == "" || validNonces[nonce] == true {
-			// TODO: verify HMAC
-			// 1) generate hmac object with key being the secret key from config.App
-			// 2) prepare the query string, remove the hmac from the fyll URL, remove the http://host? from the URL
-			// 3) generate HMAC digest of query string
-			// 4) compare to HMAC received. if equal, pass.
-			return true
-		}
-
-	}
-
-	return false
+func CheckShopDomain(shop string) bool {
+	reg := regexp.MustCompile(`\A[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com`)
+	return reg.MatchString(shop)
 }
 
 func RequestAccessToken(shopName, clientId, clientSecret, code string) (data.ShopifyAccessTokenResponse, error) {
@@ -60,7 +47,7 @@ func RequestAccessToken(shopName, clientId, clientSecret, code string) (data.Sho
 }
 
 func CheckNonce(nonce string) bool {
-  return validNonces[nonce] == true
+	return validNonces[nonce] == true
 }
 
 func AuthorizeNonce(nonce string) {
