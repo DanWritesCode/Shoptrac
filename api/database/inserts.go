@@ -5,14 +5,14 @@ import (
 )
 
 func BulkInsertOrders(orders []data.Order) error {
-	stmt, err := DB.Prepare("INSERT INTO orders (id, `orderId`, `date`, `amount`, `items`, `country`, `cogs`) VALUES (NULL, ?, ?, ?, ?, ?, ?);")
+	stmt, err := DB.Prepare("INSERT INTO orders (id, `orderId`, `date`, `items`, `country`, `paymentGateway`, `subtotal`, `shipping`, `taxes`, `tips`, `totalAmount`, `cogs`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {
 		return err
 	}
 
 	for _, order := range orders {
-		_, err = stmt.Exec(order.OrderID, order.Date, order.Amount, order.Items, order.Country, order.COGS)
+		_, err = stmt.Exec(order.OrderID, order.Date, order.Items, order.Country, order.PaymentGateway, order.Subtotal, order.Shipping, order.Taxes, order.Tips, order.TotalAmount, order.COGS)
 		if err != nil {
 			return err
 		}

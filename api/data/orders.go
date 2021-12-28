@@ -10,10 +10,17 @@ type Orders struct {
 }
 
 type Order struct {
-	OrderID int     `json:"orderId"`
-	Date    int64   `json:"date"`
-	Items   int     `json:"items"`
-	Country string  `json:"country"`
-	Amount  float64 `json:"amount"`
-	COGS    float64 `json:"cogs"`
+	OrderID        int    `json:"orderId"`
+	Date           int64  `json:"date"`
+	Items          int    `json:"items"`
+	Country        string `json:"country"`
+	PaymentGateway string `json:"paymentGateway"`
+
+	Subtotal    float64 `json:"subtotal"`
+	Shipping    float64 `json:"shippingCharged"`
+	Taxes       float64 `json:"taxesCharged"`
+	Tips        float64 `json:"tipsCollected"`
+	TotalAmount float64 `json:"amount"`
+
+	COGS float64 `json:"cogs"`
 }

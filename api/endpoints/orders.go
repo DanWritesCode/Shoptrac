@@ -15,11 +15,11 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 		OrderMargin:       31.12,
 		Refunds:           28.95,
 		OrderList: []data.Order{{
-			OrderID: 1337,
-			Items:   1,
-			Country: "Canada",
-			Amount:  28.95,
-			COGS:    15.55,
+			OrderID:     1337,
+			Items:       1,
+			Country:     "Canada",
+			TotalAmount: 28.95,
+			COGS:        15.55,
 		}},
 	}
 	response.JSON(w, 200, s)
