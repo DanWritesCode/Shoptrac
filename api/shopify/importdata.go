@@ -64,7 +64,7 @@ func ImportOrders() error {
 		dbOrders = append(dbOrders, newOrder)
 	}
 
-	// TODO: for each item in an order, add to sql table mapping item IDs to orders (Order# - CollectionID (??? unique per item) - ItemID - Quantity)
+	// TODO: for each item in an order, add to sql table mapping item IDs to orders (Order# - ItemID - Quantity)
 
 	return database.BulkInsertOrders(dbOrders)
 }
