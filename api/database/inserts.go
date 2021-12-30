@@ -4,7 +4,7 @@ import (
 	"../data"
 )
 
-func BulkInsertOrders(orders []data.Order) error {
+func BulkInsertOrders(orders []*data.Order) error {
 	stmt, err := DB.Prepare("INSERT INTO orders (id, `orderId`, `date`, `items`, `country`, `paymentGateway`, `subtotal`, `shipping`, `taxes`, `tips`, `totalAmount`, `cogs`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {
@@ -21,7 +21,7 @@ func BulkInsertOrders(orders []data.Order) error {
 	return nil
 }
 
-func BulkInsertCustomers(customers []data.Customer) error {
+func BulkInsertCustomers(customers []*data.Customer) error {
 	stmt, err := DB.Prepare("INSERT INTO customers (id, `name`, `country`, `ordersMade`, `amountSpent`) VALUES (NULL, ?, ?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {
@@ -38,16 +38,15 @@ func BulkInsertCustomers(customers []data.Customer) error {
 	return nil
 }
 
-// used for both products and collections
-func BulkInsertProduct(ts []data.TopSeller) error {
-	stmt, err := DB.Prepare("INSERT INTO product (id, `name`, `quantity`, `percentage`, `amount`) VALUES (NULL, ?, ?, ?, ?);")
+func BulkInsertOrderProduct(ts []*data.OrderProduct) error {
+	stmt, err := DB.Prepare("INSERT INTO orderProduct (`shopifyOrderId`, `shopifyVariantId`,`quantity`) VALUES (?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {
 		return err
 	}
 
 	for _, t := range ts {
-		_, err = stmt.Exec(t.Item, t.QuantitySold, t.PercentageOfSales, t.AmountSold)
+		_, err = stmt.Exec(t.ShopifyOrderId, t.ShopifyVariantId, t.Quantity)
 		if err != nil {
 			return err
 		}
@@ -56,7 +55,24 @@ func BulkInsertProduct(ts []data.TopSeller) error {
 	return nil
 }
 
-func BulkInsertRevenue(rev []data.Revenue) error {
+func BulkInsertProducts(ts []*data.Product) error {
+	stmt, err := DB.Prepare("INSERT INTO products (id, `shopifyVariantId`, `itemName`, `variantName`,`price`) VALUES (NULL, ?, ?, ?, ?);")
+	defer stmt.Close()
+	if err != nil {
+		return err
+	}
+
+	for _, t := range ts {
+		_, err = stmt.Exec(t.ShopifyVariantId, t.ItemName, t.VariantName, t.Price)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func BulkInsertRevenue(rev []*data.Revenue) error {
 	stmt, err := DB.Prepare("INSERT INTO dailyRevenue (id, `date`, `sales`, `shipping`, `taxes`, `tips`, `discounts`) VALUES (NULL, ?, ?, ?, ?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {

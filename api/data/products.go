@@ -10,8 +10,22 @@ type Products struct {
 }
 
 type TopSeller struct {
-	Item              string  `json:"item"`
+	Product           Product `json:"product"`
 	QuantitySold      int     `json:"quantitySold"`
 	PercentageOfSales float64 `json:"percentageSales"`
 	AmountSold        float64 `json:"amountSold"`
+}
+
+type Product struct {
+	ID               int     `json:"id,omitempty"`
+	ShopifyVariantId int64   `json:"shopifyVariantId"`
+	ItemName         string  `json:"itemName"`
+	VariantName      string  `json:"variantName"`
+	Price            float64 `json:"price"`
+}
+
+type OrderProduct struct {
+	ShopifyOrderId   int   `json:"shopifyOrderId"`
+	ShopifyVariantId int64 `json:"ShopifyVariantId"`
+	Quantity         int   `json:"quantity"`
 }

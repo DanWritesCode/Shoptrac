@@ -27,9 +27,9 @@ func ImportCustomers() error {
 		return err
 	}
 
-	var topCustomers []data.Customer
+	var topCustomers []*data.Customer
 	for _, customer := range customers {
-		topCustomers = append(topCustomers, data.Customer{
+		topCustomers = append(topCustomers, &data.Customer{
 			Name:        customer.FirstName + " " + customer.LastName,
 			Country:     customer.DefaultAddress.Country,
 			OrdersMade:  customer.OrdersCount,
@@ -51,46 +51,98 @@ func ImportOrders() error {
 		return err
 	}
 
-	var dbOrders []data.Order
+	var dbOrders []*data.Order
+	var orderProducts []*data.OrderProduct
+
 	for _, order := range orders {
 		newOrder := data.Order{
-			OrderID:     int(order.ID),
+			OrderID:     order.AppID,
 			Date:        order.CreatedAt.Unix(),
 			Items:       len(order.LineItems),
 			Country:     order.ShippingAddress.Country,
 			TotalAmount: order.TotalPrice.InexactFloat64(),
 			COGS:        0,
 		}
-		dbOrders = append(dbOrders, newOrder)
+
+		dbOrders = append(dbOrders, &newOrder)
+
+		for _, item := range order.LineItems {
+			itemS := data.OrderProduct{
+				ShopifyOrderId:   order.AppID,
+				ShopifyVariantId: item.VariantID,
+				Quantity:         item.Quantity,
+			}
+
+			orderProducts = append(orderProducts, &itemS)
+		}
 	}
 
-	// TODO: for each item in an order, add to sql table mapping item IDs to orders (Order# - ItemID - Quantity)
+	err = database.BulkInsertOrders(dbOrders)
+	if err != nil {
+		return err
+	}
 
-	return database.BulkInsertOrders(dbOrders)
+	return database.BulkInsertOrderProduct(orderProducts)
 }
 
-/*func GenerateDailyRevenue() error {
-  // check the daily revenue database to find last day revenue has been generated for
-  rev, err := database.GetLastDailyRevenue()
-  if err != nil {
-    return err
-  }
+func ImportProducts() error {
+	products, err := ShopifyClient.Client.Product.List(goshopify.ProductListOptions{})
+	if err != nil {
+		return err
+	}
 
-  // get the orders from sql (WHERE date > last date of known revenue)
-  orders, err2 := database.GetOrdersAfterDate(rev.Date)
-  if err2 != nil {
-    return err2
-  }
+	var productArr []*data.Product
+	for _, product := range products {
+		for _, variant := range product.Variants {
+			p := data.Product{
+				ShopifyVariantId: variant.ID,
+				ItemName:         product.Title,
+				VariantName:      variant.Title,
+				Price:            variant.Price.InexactFloat64(),
+			}
 
-  // TODO: group Subtotal, Shipping, Taxes, Tips, Total per day
-  var revByDate map[int64]*data.Revenue
-  for _, order := range orders {
+			productArr = append(productArr, &p)
+		}
+	}
 
-  }
-
-
-  // TODO: store it in a data structure & insert to SQL
-
-  return nil
+	return database.BulkInsertProducts(productArr)
 }
-*/
+
+func GenerateDailyRevenue() error {
+	// check the daily revenue database to find last day revenue has been generated for
+	rev, err := database.GetLastDailyRevenue()
+	if err != nil {
+		return err
+	}
+
+	// get the orders from sql (WHERE date > last date of known revenue)
+	orders, err2 := database.GetOrdersAfterDate(rev.Date)
+	if err2 != nil {
+		return err2
+	}
+
+	// Group Subtotal, Shipping, Taxes, Tips, Total per day
+	revByDate := make(map[int64]*data.Revenue)
+	for _, order := range orders {
+		date := time.Unix(order.Date, 0).Truncate(24 * time.Hour).Unix() // get start of day epoch
+		rev := &data.Revenue{}
+		if revByDate[date] != nil {
+			rev = revByDate[date]
+		} else {
+			revByDate[date] = rev
+		}
+
+		rev.Date = date
+		rev.Sales += order.Subtotal
+		rev.ShippingCharged += order.Shipping
+		rev.TaxesCollected += order.Taxes
+		rev.Tips += order.Tips
+	}
+
+	allRev := make([]*data.Revenue, len(revByDate))
+	for i, rev := range revByDate {
+		allRev[i] = rev
+	}
+
+	return database.BulkInsertRevenue(allRev)
+}

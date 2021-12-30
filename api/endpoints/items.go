@@ -12,12 +12,20 @@ func GetItems(w http.ResponseWriter, r *http.Request) {
 		ItemsPerOrder:  0,
 		InventoryValue: 0,
 		TopSellingItems: []data.TopSeller{{
-			Item:              "Test Item",
+			Product: data.Product{
+				Item:    "Item 1",
+				Variant: "Variant 1",
+				Price:   0,
+			},
 			QuantitySold:      10,
 			PercentageOfSales: 50,
 			AmountSold:        60,
 		}, {
-			Item:              "Another Test Item",
+			Product: data.Product{
+				Item:    "Item 2",
+				Variant: "Variant 2",
+				Price:   0,
+			},
 			QuantitySold:      10,
 			PercentageOfSales: 50,
 			AmountSold:        60,
