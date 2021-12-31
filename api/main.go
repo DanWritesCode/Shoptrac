@@ -28,7 +28,7 @@ func main() {
 	}
 
 	shopify.SetupClient()
-  shopify.NewShopify(cfg.App.ClientId, cfg.App.ClientSecret, cfg.App.RedirectURL)
+	shopify.NewShopify(cfg.App.ClientId, cfg.App.ClientSecret, cfg.App.RedirectURL)
 
 	err = logging.SetLogPath(cfg.LogFile)
 	if err != nil {
@@ -42,6 +42,8 @@ func main() {
 
 	database.ConnectToDB(cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Database)
 	defer database.CloseDB()
+
+	shopify.TestDataImports()
 
 	//limit = limiter.NewConcurrencyLimiter(2000)
 

@@ -3,6 +3,8 @@ package shopify
 import (
 	"../data"
 	"../database"
+	"fmt"
+	"strings"
 
 	goshopify "github.com/bold-commerce/go-shopify"
 
@@ -12,6 +14,34 @@ import (
 type CustomerListOptions struct {
 	SortKey string `url:"sortKey,omitempty"`
 	First   int    `url:"first,omitempty"`
+}
+
+func TestDataImports() {
+	ShopifyClient.Client = ShopifyClient.NewClient("", "")
+
+	err := ImportCustomers()
+	if err != nil {
+		fmt.Println("ran into error 1")
+		fmt.Println(err.Error())
+	}
+
+	err = ImportOrders()
+	if err != nil {
+		fmt.Println("ran into error 2")
+		fmt.Println(err.Error())
+	}
+
+	err = ImportProducts()
+	if err != nil {
+		fmt.Println("ran into error 3")
+		fmt.Println(err.Error())
+	}
+
+	err4 := GenerateDailyRevenue()
+	if err4 != nil {
+		fmt.Println("ran into error 4")
+		fmt.Println(err4.Error())
+	}
 }
 
 func ImportCustomers() error {
@@ -56,19 +86,24 @@ func ImportOrders() error {
 
 	for _, order := range orders {
 		newOrder := data.Order{
-			OrderID:     order.AppID,
-			Date:        order.CreatedAt.Unix(),
-			Items:       len(order.LineItems),
-			Country:     order.ShippingAddress.Country,
-			TotalAmount: order.TotalPrice.InexactFloat64(),
-			COGS:        0,
+			OrderID:        order.OrderNumber,
+			Date:           order.CreatedAt.Unix(),
+			Items:          len(order.LineItems),
+			Country:        order.ShippingAddress.Country,
+			PaymentGateway: order.Gateway,
+			Subtotal:       order.TotalLineItemsPrice.InexactFloat64(),
+			Shipping:       order.SubtotalPrice.InexactFloat64() - order.TotalLineItemsPrice.InexactFloat64(),
+			Taxes:          order.TotalTax.InexactFloat64(),
+			Tips:           0,
+			TotalAmount:    order.TotalPrice.InexactFloat64(),
+			COGS:           0,
 		}
 
 		dbOrders = append(dbOrders, &newOrder)
 
 		for _, item := range order.LineItems {
 			itemS := data.OrderProduct{
-				ShopifyOrderId:   order.AppID,
+				ShopifyOrderId:   order.OrderNumber,
 				ShopifyVariantId: item.VariantID,
 				Quantity:         item.Quantity,
 			}
@@ -112,7 +147,17 @@ func GenerateDailyRevenue() error {
 	// check the daily revenue database to find last day revenue has been generated for
 	rev, err := database.GetLastDailyRevenue()
 	if err != nil {
-		return err
+		if strings.Contains(err.Error(), "no rows") {
+			rev = &data.Revenue{Date: 0}
+		} else {
+			return err
+		}
+	}
+
+	// search date should be +1 day from last day we have revenue info for
+	// unless we dont have any revenue info at all, in which case get all orders > 0
+	if rev.Date > 0 {
+		rev.Date += 86400
 	}
 
 	// get the orders from sql (WHERE date > last date of known revenue)
@@ -140,8 +185,10 @@ func GenerateDailyRevenue() error {
 	}
 
 	allRev := make([]*data.Revenue, len(revByDate))
-	for i, rev := range revByDate {
-		allRev[i] = rev
+	pos := 0
+	for _, rev := range revByDate {
+		allRev[pos] = rev
+		pos++
 	}
 
 	return database.BulkInsertRevenue(allRev)

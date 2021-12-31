@@ -34,14 +34,14 @@
 
     </div>
     <div class="row mt-4">
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-12">
         <su-list-box title="Top Selling Items" :columns="topItemsCol" :data="topItems">
         </su-list-box>
       </div>
-      <div class="col-12 col-lg-6">
+      <!--<div class="col-12 col-lg-6">
         <su-list-box title="Top Selling Collections" :columns="topItemsCol" :data="topCollections">
         </su-list-box>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -86,7 +86,7 @@ export default {
       topItemsCol: ["Name", "Quantity Sold", "% of Gross Sales", "Amount Sold ($)"],
 
       topItems: {},
-      topCollections: {},
+      //topCollections: {},
     }
   },
   methods: {
@@ -100,11 +100,11 @@ export default {
         this.topItems[i].amountSold = "$" + this.topItems[i].amountSold.toFixed(2).toLocaleString();
         this.topItems[i].percentageSales = this.topItems[i].percentageSales.toFixed(2).toString() + "%";
       }
-      this.topCollections = data.topSellingCollections;
+      /*this.topCollections = data.topSellingCollections;
       for(let i = 0; i < this.topCollections.length; i++) {
         this.topCollections[i].amountSold = "$" + this.topCollections[i].amountSold.toFixed(2).toLocaleString();
         this.topCollections[i].percentageSales = this.topCollections[i].percentageSales.toFixed(2).toString() + "%";
-      }
+      }*/
 
     },
   },

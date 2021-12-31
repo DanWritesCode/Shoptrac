@@ -45,14 +45,14 @@ func BulkInsertOrderProduct(ts []*data.OrderProduct) error {
 		return err
 	}
 
+	err = nil
 	for _, t := range ts {
 		_, err = stmt.Exec(t.ShopifyOrderId, t.ShopifyVariantId, t.Quantity)
-		if err != nil {
-			return err
-		}
+		// no immediate error handling. attempt all insertions first
 	}
 
-	return nil
+	// this will return either the error or nil
+	return err
 }
 
 func BulkInsertProducts(ts []*data.Product) error {
