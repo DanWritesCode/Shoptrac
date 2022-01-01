@@ -2,6 +2,7 @@ package database
 
 import (
 	"../data"
+	"database/sql"
 )
 
 type Shop struct {
@@ -42,6 +43,117 @@ func GetLastDailyRevenue() (*data.Revenue, error) {
 		return nil, err
 	}
 	return &rev, nil
+}
+
+func GetDailyRevenue(from int64) ([]*data.Revenue, error) {
+	revArr := make([]*data.Revenue, 0)
+
+	// Query for a value based on a single row.
+	rows, err := DB.Query("SELECT `date`, sales, shipping, taxes, tips, discounts FROM `dailyRevenue` WHERE `date` > ? ORDER BY date DESC;", from)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	err = nil
+	for rows.Next() {
+		rev := data.Revenue{}
+		err2 := rows.Scan(&rev.Date, &rev.Sales, &rev.ShippingCharged, &rev.TaxesCollected, &rev.Tips, &rev.Discounts)
+		if err2 != nil {
+			err = err2
+		}
+
+		revArr = append(revArr, &rev)
+	}
+
+	return revArr, err
+}
+
+func GetCustomers() ([]*data.Customer, error) {
+	return GetTopCustomersByRevenue(-1)
+}
+
+func GetTopCustomersByRevenue(limit int) ([]*data.Customer, error) {
+	revArr := make([]*data.Customer, 0)
+	var rows *sql.Rows
+	var err error
+
+	if limit < 0 {
+		// no limit
+		rows, err = DB.Query("SELECT `name`, `country`, `ordersMade`, amountSpent FROM `customers` ORDER BY amountSpent DESC;")
+	} else {
+		// limit amount of results to value of limit
+		rows, err = DB.Query("SELECT `name`, `country`, `ordersMade`, amountSpent FROM `customers` ORDER BY amountSpent DESC LIMIT ?;", limit)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	err = nil
+	for rows.Next() {
+		rev := data.Customer{}
+		err2 := rows.Scan(&rev.Name, &rev.Country, &rev.OrdersMade, &rev.AmountSpent)
+		if err2 != nil {
+			err = err2
+		}
+
+		revArr = append(revArr, &rev)
+	}
+
+	return revArr, err
+}
+
+func GetTopSellingProducts(date int64, limit int) ([]*data.TopSeller, error) {
+	revArr := make([]*data.TopSeller, 0)
+
+	// quickly grab a stat from the orders table. we'll need this number to do % of Sales calculations later on
+	totalItemsOrdered := 0
+	if err := DB.QueryRow("SELECT SUM(`items`) FROM `orders` WHERE `date` > ?;", date).Scan(
+		&totalItemsOrdered); err != nil {
+		return nil, err
+	}
+
+	// now for the good part
+
+	// Credits to Thomas / Github: @Period for assisting with this query
+	// Still took an hour to write though :/
+	rows, err := DB.Query(
+		"SELECT `products`.`id`, `products`.`shopifyVariantId`, `products`.`itemName`, `products`.`variantName`, `products`.`price`, SUM(`orderProduct`.`quantity`) AS `unitsSold` FROM `orderProduct` "+
+			"INNER JOIN `products` on `products`.`shopifyVariantId` = `orderProduct`.`shopifyVariantId` "+
+			"INNER JOIN `orders` on `orders`.`orderId` = `orderProduct`.`shopifyOrderId` "+
+			"WHERE `orders`.`date` > ? "+
+			"GROUP BY `orderProduct`.`shopifyVariantId` "+
+			"ORDER BY `unitsSold` DESC LIMIT ?;",
+		date, limit)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	err = nil
+	for rows.Next() {
+		rev := data.TopSeller{}
+		err2 := rows.Scan(&rev.Product.ID, &rev.Product.ShopifyVariantId, &rev.Product.ItemName, &rev.Product.VariantName, &rev.Product.Price, &rev.QuantitySold)
+		if err2 != nil {
+			err = err2
+		}
+
+		rev.AmountSold = float64(rev.QuantitySold) * rev.Product.Price
+		rev.PercentageOfSales = float64(rev.QuantitySold) / float64(totalItemsOrdered) * 100
+
+		revArr = append(revArr, &rev)
+	}
+
+	return revArr, err
 }
 
 func GetOrdersAfterDate(date int64) ([]*data.Order, error) {

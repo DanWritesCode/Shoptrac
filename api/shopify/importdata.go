@@ -44,7 +44,7 @@ func DataImportProcess(shopName string, client *goshopify.Client) {
 		logging.GetLogger().Println(err.Error())
 	}
 
-	err4 := GenerateDailyRevenue(client)
+	err4 := GenerateDailyRevenue()
 	if err4 != nil {
 		logging.GetLogger().Println(err4.Error())
 	}
@@ -151,7 +151,7 @@ func ImportProducts(client *goshopify.Client) error {
 	return database.BulkInsertProducts(productArr)
 }
 
-func GenerateDailyRevenue(client *goshopify.Client) error {
+func GenerateDailyRevenue() error {
 	// check the daily revenue database to find last day revenue has been generated for
 	rev, err := database.GetLastDailyRevenue()
 	if err != nil {
