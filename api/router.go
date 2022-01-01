@@ -31,9 +31,13 @@ func InitRouter(timeout int) *chi.Mux {
 	r.Route("/", func(r chi.Router) {
 		// Protected routes
 		r.Group(func(r chi.Router) {
-      r.Get("/install", endpoints.GetInstall)
-			// Shopify App Install Endpoint - handles OAuth with Shopify
+			// Shopify App Install Endpoints - handle OAuth with Shopify
+			r.Get("/install", endpoints.GetInstall)
 			r.Post("/install", endpoints.PostInstall)
+
+			// Sync endpoints
+			r.Get("/sync", endpoints.GetSync)
+			r.Post("/sync", endpoints.PostSync)
 
 			// Dashboard GET Endpoint - Shows Summary
 			r.Get("/summary", endpoints.GetSummary)

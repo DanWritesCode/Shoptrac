@@ -3,7 +3,7 @@ package shopify
 import (
 	"../data"
 	"../database"
-	"fmt"
+	"../logging"
 	"strings"
 
 	goshopify "github.com/bold-commerce/go-shopify"
@@ -16,35 +16,43 @@ type CustomerListOptions struct {
 	First   int    `url:"first,omitempty"`
 }
 
-func TestDataImports() {
-	ShopifyClient.Client = ShopifyClient.NewClient("", "")
+var importsInProgress = make(map[string]bool)
 
-	err := ImportCustomers()
-	if err != nil {
-		fmt.Println("ran into error 1")
-		fmt.Println(err.Error())
-	}
-
-	err = ImportOrders()
-	if err != nil {
-		fmt.Println("ran into error 2")
-		fmt.Println(err.Error())
-	}
-
-	err = ImportProducts()
-	if err != nil {
-		fmt.Println("ran into error 3")
-		fmt.Println(err.Error())
-	}
-
-	err4 := GenerateDailyRevenue()
-	if err4 != nil {
-		fmt.Println("ran into error 4")
-		fmt.Println(err4.Error())
-	}
+func IsImportInProgress(shopName string) bool {
+	return importsInProgress[shopName]
 }
 
-func ImportCustomers() error {
+func DataImportProcess(shopName string, client *goshopify.Client) {
+	if importsInProgress[shopName] {
+		return
+	}
+
+	importsInProgress[shopName] = true
+
+	err := ImportCustomers(client)
+	if err != nil {
+		logging.GetLogger().Println(err.Error())
+	}
+
+	err = ImportOrders(client)
+	if err != nil {
+		logging.GetLogger().Println(err.Error())
+	}
+
+	err = ImportProducts(client)
+	if err != nil {
+		logging.GetLogger().Println(err.Error())
+	}
+
+	err4 := GenerateDailyRevenue(client)
+	if err4 != nil {
+		logging.GetLogger().Println(err4.Error())
+	}
+
+	importsInProgress[shopName] = false
+}
+
+func ImportCustomers(client *goshopify.Client) error {
 	// 0) TODO: get count of customers (new, returning, and total) and store it somewhere in the database (?)
 
 	options := CustomerListOptions{
@@ -52,7 +60,7 @@ func ImportCustomers() error {
 		First:   10,
 	}
 
-	customers, err := ShopifyClient.Client.Customer.List(options)
+	customers, err := client.Customer.List(options)
 	if err != nil {
 		return err
 	}
@@ -70,13 +78,13 @@ func ImportCustomers() error {
 	return database.BulkInsertCustomers(topCustomers)
 }
 
-func ImportOrders() error {
+func ImportOrders(client *goshopify.Client) error {
 	// Create standard CountOptions
 	date := time.Now().Add(time.Hour * 24 * -30)
 	options := goshopify.OrderListOptions{ProcessedAtMin: date}
 
 	// Use the options when calling the API.
-	orders, err := ShopifyClient.Client.Order.List(options)
+	orders, err := client.Order.List(options)
 	if err != nil {
 		return err
 	}
@@ -120,8 +128,8 @@ func ImportOrders() error {
 	return database.BulkInsertOrderProduct(orderProducts)
 }
 
-func ImportProducts() error {
-	products, err := ShopifyClient.Client.Product.List(goshopify.ProductListOptions{})
+func ImportProducts(client *goshopify.Client) error {
+	products, err := client.Product.List(goshopify.ProductListOptions{})
 	if err != nil {
 		return err
 	}
@@ -143,7 +151,7 @@ func ImportProducts() error {
 	return database.BulkInsertProducts(productArr)
 }
 
-func GenerateDailyRevenue() error {
+func GenerateDailyRevenue(client *goshopify.Client) error {
 	// check the daily revenue database to find last day revenue has been generated for
 	rev, err := database.GetLastDailyRevenue()
 	if err != nil {

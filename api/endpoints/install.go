@@ -63,6 +63,16 @@ func PostInstall(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			err = database.SetDatabaseConfig("shopName", id.Shop)
+			if err != nil {
+				logging.GetLogger().Println("Unable to set database config (3) - " + err.Error())
+				response.BadRequest(w, "Shopify Installation Failed - Database Insert")
+				return
+			}
+
+			// start the import process asynchronously
+			go shopify.DataImportProcess(id.Shop, shopify.ShopifyClient.NewClient(id.Shop, sat.AccessToken))
+
 			response.DefaultResponse(w, 200, map[string]string{"message": "Installation Success"})
 		} else {
 			logging.GetLogger().Println("Unable to obtain access token from Shopify - " + err.Error())

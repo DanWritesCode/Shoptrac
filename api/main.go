@@ -43,10 +43,6 @@ func main() {
 	database.ConnectToDB(cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Database)
 	defer database.CloseDB()
 
-	shopify.TestDataImports()
-
-	//limit = limiter.NewConcurrencyLimiter(2000)
-
 	r := InitRouter(cfg.Timeout)
 
 	log.Infof("Now listening on port %v.", cfg.Port)
