@@ -7,7 +7,7 @@ type Customers struct {
 	HighestSpender     float64 `json:"highestSpender"`
 	LowestSpender      float64 `json:"lowestSpender"`
 
-	TopCustomerList []Customer `json:"topCustomerList"`
+	TopCustomerList []*Customer `json:"topCustomerList"`
 }
 
 type Customer struct {
