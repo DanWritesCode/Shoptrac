@@ -34,6 +34,18 @@ func GetShop() (*Shop, error) {
 	return &shop, nil
 }
 
+func GetLastOrder() (*data.Order, error) {
+	rev := data.Order{}
+
+	// Query for a value based on a single row.
+	if err := DB.QueryRow("SELECT `orderId`, `date`, `items`, `country`, `paymentGateway`, `subtotal`, `shipping`, `taxes`, `tips`, `totalAmount`, `cogs` FROM orders ORDER BY date DESC LIMIT 1;").Scan(
+		&rev.OrderID, &rev.Date, &rev.Items, &rev.Country, &rev.PaymentGateway, &rev.Subtotal, &rev.Shipping, &rev.Taxes, &rev.Tips, &rev.TotalAmount, &rev.COGS); err != nil {
+		return nil, err
+	}
+
+	return &rev, nil
+}
+
 func GetLastDailyRevenue() (*data.Revenue, error) {
 	rev := data.Revenue{}
 
@@ -82,10 +94,10 @@ func GetTopCustomersByRevenue(limit int) ([]*data.Customer, error) {
 
 	if limit < 0 {
 		// no limit
-		rows, err = DB.Query("SELECT `name`, `country`, `ordersMade`, amountSpent FROM `customers` ORDER BY amountSpent DESC;")
+		rows, err = DB.Query("SELECT `shopifyId`, `name`, `country`, `ordersMade`, amountSpent FROM `customers` ORDER BY amountSpent DESC;")
 	} else {
 		// limit amount of results to value of limit
-		rows, err = DB.Query("SELECT `name`, `country`, `ordersMade`, amountSpent FROM `customers` ORDER BY amountSpent DESC LIMIT ?;", limit)
+		rows, err = DB.Query("SELECT `shopifyId`, `name`, `country`, `ordersMade`, amountSpent FROM `customers` ORDER BY amountSpent DESC LIMIT ?;", limit)
 	}
 
 	if err != nil {
@@ -98,7 +110,7 @@ func GetTopCustomersByRevenue(limit int) ([]*data.Customer, error) {
 	err = nil
 	for rows.Next() {
 		rev := data.Customer{}
-		err2 := rows.Scan(&rev.Name, &rev.Country, &rev.OrdersMade, &rev.AmountSpent)
+		err2 := rows.Scan(&rev.ShopifyId, &rev.Name, &rev.Country, &rev.OrdersMade, &rev.AmountSpent)
 		if err2 != nil {
 			err = err2
 		}
@@ -107,6 +119,27 @@ func GetTopCustomersByRevenue(limit int) ([]*data.Customer, error) {
 	}
 
 	return revArr, err
+}
+
+func GetAllProducts() ([]*data.Product, error) {
+	retArr := make([]*data.Product, 0)
+	rows, err := DB.Query("SELECT `id`, `shopifyVariantId`, `itemName`, `variantName`,`price` FROM products;")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		rev := data.Product{}
+		if err := rows.Scan(&rev.ID, &rev.ShopifyVariantId, &rev.ItemName, &rev.VariantName, &rev.Price); err != nil {
+			continue
+		}
+		retArr = append(retArr, &rev)
+	}
+
+	return retArr, nil
 }
 
 func GetTopSellingProducts(date int64, limit int) ([]*data.TopSeller, error) {

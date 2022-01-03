@@ -34,7 +34,7 @@ func DataImportProcess(shopName string, client *goshopify.Client) {
 		logging.GetLogger().Println(err.Error())
 	}
 
-	err = ImportOrders(client)
+	err = ImportNewOrders(client)
 	if err != nil {
 		logging.GetLogger().Println(err.Error())
 	}
@@ -53,7 +53,13 @@ func DataImportProcess(shopName string, client *goshopify.Client) {
 }
 
 func ImportCustomers(client *goshopify.Client) error {
-	// 0) TODO: get count of customers (new, returning, and total) and store it somewhere in the database (?)
+	existingCustomers, _ := database.GetCustomers()
+	existingCustomersMap := make(map[int64]*data.Customer)
+	if existingCustomers != nil {
+		for _, customer := range existingCustomers {
+			existingCustomersMap[customer.ShopifyId] = customer
+		}
+	}
 
 	options := CustomerListOptions{
 		SortKey: "TOTAL_SPENT",
@@ -67,7 +73,16 @@ func ImportCustomers(client *goshopify.Client) error {
 
 	var topCustomers []*data.Customer
 	for _, customer := range customers {
+		if existingCustomersMap[customer.ID] != nil {
+			if existingCustomersMap[customer.ID].AmountSpent == customer.TotalSpent.InexactFloat64() &&
+				existingCustomersMap[customer.ID].OrdersMade == customer.OrdersCount {
+				continue
+			} else {
+				// TODO: delete customer and re-insert
+			}
+		}
 		topCustomers = append(topCustomers, &data.Customer{
+			ShopifyId:   customer.ID,
 			Name:        customer.FirstName + " " + customer.LastName,
 			Country:     customer.DefaultAddress.Country,
 			OrdersMade:  customer.OrdersCount,
@@ -78,10 +93,24 @@ func ImportCustomers(client *goshopify.Client) error {
 	return database.BulkInsertCustomers(topCustomers)
 }
 
-func ImportOrders(client *goshopify.Client) error {
-	// Create standard CountOptions
-	date := time.Now().Add(time.Hour * 24 * -30)
-	options := goshopify.OrderListOptions{ProcessedAtMin: date}
+func ImportNewOrders(client *goshopify.Client) error {
+	// Check existing orders
+	lastOrder, err := database.GetLastOrder()
+	if err != nil {
+		if strings.Contains(err.Error(), "no rows") {
+			lastOrder = &data.Order{Date: 0}
+		} else {
+			return err
+		}
+	}
+
+	// add 1 second to the last order's date
+	if lastOrder.Date > 0 {
+		lastOrder.Date++
+	}
+
+	// Only get new orders that are 1 second after the last order's date
+	options := goshopify.OrderListOptions{ProcessedAtMin: time.Unix(lastOrder.Date, 0)}
 
 	// Use the options when calling the API.
 	orders, err := client.Order.List(options)
@@ -93,11 +122,15 @@ func ImportOrders(client *goshopify.Client) error {
 	var orderProducts []*data.OrderProduct
 
 	for _, order := range orders {
+		country := ""
+		if order.ShippingAddress != nil {
+			country = order.ShippingAddress.Country
+		}
 		newOrder := data.Order{
 			OrderID:        order.OrderNumber,
 			Date:           order.CreatedAt.Unix(),
 			Items:          len(order.LineItems),
-			Country:        order.ShippingAddress.Country,
+			Country:        country,
 			PaymentGateway: order.Gateway,
 			Subtotal:       order.TotalLineItemsPrice.InexactFloat64(),
 			Shipping:       order.SubtotalPrice.InexactFloat64() - order.TotalLineItemsPrice.InexactFloat64(),
@@ -129,6 +162,14 @@ func ImportOrders(client *goshopify.Client) error {
 }
 
 func ImportProducts(client *goshopify.Client) error {
+	existingProducts, _ := database.GetAllProducts()
+	existingProductsMap := make(map[int64]*data.Product)
+	if existingProducts != nil {
+		for _, product := range existingProducts {
+			existingProductsMap[product.ShopifyVariantId] = product
+		}
+	}
+
 	products, err := client.Product.List(goshopify.ProductListOptions{})
 	if err != nil {
 		return err
@@ -137,6 +178,17 @@ func ImportProducts(client *goshopify.Client) error {
 	var productArr []*data.Product
 	for _, product := range products {
 		for _, variant := range product.Variants {
+			if existingProductsMap[variant.ID] != nil {
+				// if nothing changed
+				if existingProductsMap[variant.ID].Price == variant.Price.InexactFloat64() &&
+					existingProductsMap[variant.ID].VariantName == variant.Title &&
+					existingProductsMap[variant.ID].ItemName == product.Title {
+					continue
+				} else {
+					// if something about the product changed and needs updating
+					// TODO: delete product from SQL and re-add
+				}
+			}
 			p := data.Product{
 				ShopifyVariantId: variant.ID,
 				ItemName:         product.Title,

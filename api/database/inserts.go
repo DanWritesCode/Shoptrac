@@ -12,24 +12,21 @@ func BulkInsertOrders(orders []*data.Order) error {
 	}
 
 	for _, order := range orders {
-		_, err = stmt.Exec(order.OrderID, order.Date, order.Items, order.Country, order.PaymentGateway, order.Subtotal, order.Shipping, order.Taxes, order.Tips, order.TotalAmount, order.COGS)
-		if err != nil {
-			return err
-		}
+		_, _ = stmt.Exec(order.OrderID, order.Date, order.Items, order.Country, order.PaymentGateway, order.Subtotal, order.Shipping, order.Taxes, order.Tips, order.TotalAmount, order.COGS)
 	}
 
 	return nil
 }
 
 func BulkInsertCustomers(customers []*data.Customer) error {
-	stmt, err := DB.Prepare("INSERT INTO customers (id, `name`, `country`, `ordersMade`, `amountSpent`) VALUES (NULL, ?, ?, ?, ?);")
+	stmt, err := DB.Prepare("INSERT INTO customers (id, `shopifyId`, `name`, `country`, `ordersMade`, `amountSpent`) VALUES (NULL, ?, ?, ?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {
 		return err
 	}
 
 	for _, customer := range customers {
-		_, err = stmt.Exec(customer.Name, customer.Country, customer.OrdersMade, customer.AmountSpent)
+		_, err = stmt.Exec(customer.ShopifyId, customer.Name, customer.Country, customer.OrdersMade, customer.AmountSpent)
 		if err != nil {
 			return err
 		}

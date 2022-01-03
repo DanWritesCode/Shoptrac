@@ -11,6 +11,7 @@ type Customers struct {
 }
 
 type Customer struct {
+	ShopifyId   int64   `json:"shopifyId,omitempty"`
 	Name        string  `json:"name"`
 	Country     string  `json:"country"`
 	OrdersMade  int     `json:"ordersMade"`
