@@ -6,7 +6,7 @@ type Orders struct {
 	OrderMargin       float64 `json:"margin"`
 	Refunds           float64 `json:"refunds"`
 
-	OrderList []Order `json:"orderList"`
+	OrderList []*Order `json:"orderList"`
 }
 
 type Order struct {

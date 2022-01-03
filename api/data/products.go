@@ -5,7 +5,7 @@ type Products struct {
 	ItemsPerOrder  float64 `json:"itemsPerOrder"`
 	InventoryValue float64 `json:"inventoryValue"`
 
-	TopSellingItems []TopSeller `json:"topSellingItems"`
+	TopSellingItems []*TopSeller `json:"topSellingItems"`
 	// TopSellingCollections   []TopSeller `json:"topSellingCollections"`
 }
 

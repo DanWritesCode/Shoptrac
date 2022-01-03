@@ -2,38 +2,37 @@ package endpoints
 
 import (
 	"../data"
+	"../database"
 	"../response"
 	"net/http"
 )
 
 func GetItems(w http.ResponseWriter, r *http.Request) {
-	s := data.Products{
-		AvgPrice:       0,
-		ItemsPerOrder:  0,
-		InventoryValue: 0,
-		TopSellingItems: []data.TopSeller{{
-			Product: data.Product{
-				ID:               0,
-				ShopifyVariantId: 0,
-				ItemName:         "Item",
-				VariantName:      "Variant 1",
-				Price:            10,
-			},
-			QuantitySold:      10,
-			PercentageOfSales: 50,
-			AmountSold:        60,
-		}, {
-			Product: data.Product{
-				ID:               0,
-				ShopifyVariantId: 0,
-				ItemName:         "Item 2",
-				VariantName:      "Variant 2",
-				Price:            20,
-			},
-			QuantitySold:      10,
-			PercentageOfSales: 50,
-			AmountSold:        60,
-		}},
+	s := data.Products{}
+
+	tsp, err := database.GetTopSellingProducts(0, 10)
+	if err != nil {
+		response.BadRequest(w, "Unable to get products from the database")
+		return
 	}
+
+	// average price of *top selling* products - later on we can change this to average price of all products
+	allItemsPrice := 0.0
+	for _, item := range tsp {
+		allItemsPrice += item.Product.Price
+	}
+
+	s.AvgPrice = allItemsPrice / float64(len(tsp))
+	s.TopSellingItems = tsp
+
+	allItems := 0
+	orders, err := database.GetOrdersAfterDate(0)
+	if err == nil {
+		for _, order := range orders {
+			allItems += order.Items
+		}
+		s.ItemsPerOrder = float64(allItems) / float64(len(orders))
+	}
+
 	response.JSON(w, 200, s)
 }
