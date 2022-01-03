@@ -38,8 +38,8 @@ func GetLastDailyRevenue() (*data.Revenue, error) {
 	rev := data.Revenue{}
 
 	// Query for a value based on a single row.
-	if err := DB.QueryRow("SELECT `date`, sales, shipping, taxes, tips, discounts FROM `dailyRevenue` ORDER BY date DESC LIMIT 1;").Scan(
-		&rev.Date, &rev.Sales, &rev.ShippingCharged, &rev.TaxesCollected, &rev.Tips, &rev.Discounts); err != nil {
+	if err := DB.QueryRow("SELECT `date`, sales, shipping, taxes, tips, discounts, total FROM `dailyRevenue` ORDER BY date DESC LIMIT 1;").Scan(
+		&rev.Date, &rev.Sales, &rev.ShippingCharged, &rev.TaxesCollected, &rev.Tips, &rev.Discounts, &rev.Total); err != nil {
 		return nil, err
 	}
 	return &rev, nil
@@ -49,7 +49,7 @@ func GetDailyRevenue(from int64) ([]*data.Revenue, error) {
 	revArr := make([]*data.Revenue, 0)
 
 	// Query for a value based on a single row.
-	rows, err := DB.Query("SELECT `date`, sales, shipping, taxes, tips, discounts FROM `dailyRevenue` WHERE `date` > ? ORDER BY date DESC;", from)
+	rows, err := DB.Query("SELECT `date`, sales, shipping, taxes, tips, discounts, total FROM `dailyRevenue` WHERE `date` > ? ORDER BY date DESC;", from)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func GetDailyRevenue(from int64) ([]*data.Revenue, error) {
 	err = nil
 	for rows.Next() {
 		rev := data.Revenue{}
-		err2 := rows.Scan(&rev.Date, &rev.Sales, &rev.ShippingCharged, &rev.TaxesCollected, &rev.Tips, &rev.Discounts)
+		err2 := rows.Scan(&rev.Date, &rev.Sales, &rev.ShippingCharged, &rev.TaxesCollected, &rev.Tips, &rev.Discounts, &rev.Total)
 		if err2 != nil {
 			err = err2
 		}

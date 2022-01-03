@@ -22,6 +22,7 @@ func GetRevenue(w http.ResponseWriter, r *http.Request) {
 		s.TaxesCollected += rev.TaxesCollected
 		s.Tips += rev.Tips
 		s.Discounts += rev.Discounts
+		s.Total += rev.Total
 	}
 
 	response.JSON(w, 200, s)

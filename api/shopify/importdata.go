@@ -190,6 +190,7 @@ func GenerateDailyRevenue() error {
 		rev.ShippingCharged += order.Shipping
 		rev.TaxesCollected += order.Taxes
 		rev.Tips += order.Tips
+		rev.Total += order.TotalAmount
 	}
 
 	allRev := make([]*data.Revenue, len(revByDate))

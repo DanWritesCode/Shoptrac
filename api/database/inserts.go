@@ -73,14 +73,14 @@ func BulkInsertProducts(ts []*data.Product) error {
 }
 
 func BulkInsertRevenue(rev []*data.Revenue) error {
-	stmt, err := DB.Prepare("INSERT INTO dailyRevenue (id, `date`, `sales`, `shipping`, `taxes`, `tips`, `discounts`) VALUES (NULL, ?, ?, ?, ?, ?, ?);")
+	stmt, err := DB.Prepare("INSERT INTO dailyRevenue (id, `date`, `sales`, `shipping`, `taxes`, `tips`, `discounts`, `total`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);")
 	defer stmt.Close()
 	if err != nil {
 		return err
 	}
 
 	for _, r := range rev {
-		_, err = stmt.Exec(r.Date, r.Sales, r.ShippingCharged, r.TaxesCollected, r.Tips, r.Discounts)
+		_, err = stmt.Exec(r.Date, r.Sales, r.ShippingCharged, r.TaxesCollected, r.Tips, r.Discounts, r.Total)
 		if err != nil {
 			return err
 		}
