@@ -78,7 +78,11 @@ func ImportCustomers(client *goshopify.Client) error {
 				existingCustomersMap[customer.ID].OrdersMade == customer.OrdersCount {
 				continue
 			} else {
-				// TODO: delete customer and re-insert
+				// re-insert the customer after deleting
+				err = database.DeleteCustomer(customer.ID)
+				if err != nil {
+					continue
+				}
 			}
 		}
 		topCustomers = append(topCustomers, &data.Customer{
@@ -94,6 +98,8 @@ func ImportCustomers(client *goshopify.Client) error {
 }
 
 func ImportNewOrders(client *goshopify.Client) error {
+	// TODO - how to handle an existing order changing?
+
 	// Check existing orders
 	lastOrder, err := database.GetLastOrder()
 	if err != nil {
@@ -186,7 +192,11 @@ func ImportProducts(client *goshopify.Client) error {
 					continue
 				} else {
 					// if something about the product changed and needs updating
-					// TODO: delete product from SQL and re-add
+					// re-insert the product after deleting
+					err = database.DeleteProduct(variant.ID)
+					if err != nil {
+						continue
+					}
 				}
 			}
 			p := data.Product{
@@ -204,6 +214,8 @@ func ImportProducts(client *goshopify.Client) error {
 }
 
 func GenerateDailyRevenue() error {
+	// TODO - how to handle daily revenue changing due to an order changing?
+
 	// check the daily revenue database to find last day revenue has been generated for
 	rev, err := database.GetLastDailyRevenue()
 	if err != nil {
