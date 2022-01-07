@@ -79,7 +79,7 @@ export default {
       refunds: {},
 
       orderList: [{}],
-      orderListCol: ["Order ID", "Items", "Country", "Amount", "COGS"],
+      orderListCol: ["Order ID", "Date", "Item Count", "Country", "Total Amount", "COGS"],
 
       notices: [],
     }
@@ -99,18 +99,26 @@ export default {
         })
   },
   methods: {
+    formatNumber(number) {
+      return Number(number).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    },
     populate(data) {
       this.orders = {"Orders": data.orders};
-      this.aov = {"AOV": "$" + data.aov.toLocaleString()};
-      this.orderMargin = {"Margin": data.margin + "%"};
-      this.refunds = {"Refunded": "$" + data.refunds.toLocaleString()};
+      this.aov = {"AOV": "$" + this.formatNumber(data.aov)};
+      this.orderMargin = {"Margin": this.formatNumber(data.margin) + "%"};
+      this.refunds = {"Refunded": "$" + this.formatNumber(data.refunds)};
 
       this.orderList = data.orderList;
       for(let i = 0; i < this.orderList.length; i++) {
         this.orderList[i].orderId = "#" + this.orderList[i].orderId;
-        this.orderList[i].amount = "$" + this.orderList[i].amount.toFixed(2).toLocaleString();
-        this.orderList[i].cogs = "$" + this.orderList[i].cogs.toFixed(2).toLocaleString();
-
+        this.orderList[i].amount = "$" + this.formatNumber(this.orderList[i].amount);
+        this.orderList[i].cogs = "$" + this.formatNumber(this.orderList[i].cogs);
+        this.orderList[i].date = new Date(this.orderList[i].date*1000).toLocaleString();
+        delete this.orderList[i].paymentGateway;
+        delete this.orderList[i].discount;
+        delete this.orderList[i].shippingCharged;
+        delete this.orderList[i].subtotal;
+        delete this.orderList[i].taxesCharged;
       }
     },
   }

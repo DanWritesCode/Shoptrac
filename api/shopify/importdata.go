@@ -138,6 +138,7 @@ func ImportNewOrders(client *goshopify.Client) error {
 			Items:          len(order.LineItems),
 			Country:        country,
 			PaymentGateway: order.Gateway,
+			Discount:       order.TotalDiscounts.InexactFloat64(),
 			Subtotal:       order.TotalLineItemsPrice.InexactFloat64(),
 			Shipping:       order.SubtotalPrice.InexactFloat64() - order.TotalLineItemsPrice.InexactFloat64(),
 			Taxes:          order.TotalTax.InexactFloat64(),

@@ -19,8 +19,8 @@
       <div class="col-12 mt-4"><h3>Expenses</h3></div>
     </div>
     <div class="row">
-      <div class="col-12 col-lg-10">
-        <su-list-box title="Store Expenses" :columns="expensesColumns" :data="expensesData" color-class="is-red"></su-list-box>
+      <div class="col-12">
+        <su-list-box title="Store Expenses Summary" :columns="expensesColumns" :data="expensesData" color-class="is-red"></su-list-box>
       </div>
     </div>
   </div>
@@ -45,8 +45,8 @@ export default {
   data() {
     return {
       notices: [],
-      expensesData: [{0: 6512, 1:111, 2:69.69, 3:0.69}],
-      expensesColumns: ["COGS (Product)", "COGS (Shipping)", "Taxes Forwarded", "Marketing"]
+      expensesData: [{}],
+      expensesColumns: ["Payment Processing", "COGS (Product)", "COGS (Shipping)", "Taxes Forwarded", "Marketing", "Recurring Costs", "One-time Costs"]
     }
   },
   async mounted() {
@@ -57,7 +57,25 @@ export default {
           }
         })
         .then((res) => {
+          for(let k in res)
+            if(typeof res[k] !== 'object')
+              res[k] = "$" + this.formatNumber(res[k])
 
+          let totalMarketing = 0;
+          let totalRecurring = 0;
+          for(let k in res.marketing)
+            totalMarketing += res.marketing[k].amount;
+
+          for(let k in res.recurring)
+            totalRecurring += res.recurring[k].amount;
+
+          delete res.marketing;
+          res.marketing = "$" + this.formatNumber(totalMarketing);
+
+          delete res.recurring;
+          res.recurring = "$" + this.formatNumber(totalRecurring);
+
+          res.oneTime = "$0.00";
 
           this.expensesData = [res];
         })
@@ -65,7 +83,9 @@ export default {
         })
   },
   methods: {
-
+    formatNumber(number) {
+      return Number(number).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    },
   }
 }
 </script>

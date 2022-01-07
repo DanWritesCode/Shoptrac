@@ -20,26 +20,26 @@
     </div>
     <div class="row">
       <!-- Total Customers -->
-      <div class="col-12 col-lg-3">
+      <div class="col-12 col-lg-4">
         <su-multiline-info-box title="Total Customers" :data="totalCustomers" class="h-100">
         </su-multiline-info-box>
       </div>
 
       <!-- New & Returning Customers -->
-      <div class="col-12 col-lg-3">
+      <div class="col-12 col-lg-4">
         <su-multiline-info-box title="New vs Returning Customers" :data="newReturningCustomers">
         </su-multiline-info-box>
       </div>
 
       <!-- Customer Spending Range -->
-      <div class="col-12 col-lg-3">
+      <div class="col-12 col-lg-4">
         <su-multiline-info-box title="Customer Spending Range" :data="customerSpendRange">
         </su-multiline-info-box>
       </div>
     </div>
     <!-- Customer List (Name, Orders, Amount Spent, Returning or New) -->
     <div class="row mt-4">
-      <div class="col-12 col-lg-9">
+      <div class="col-12">
         <su-list-box title="Most Valuable Customers" :columns="customersCol" :data="customers">
         </su-list-box>
       </div>
@@ -89,15 +89,18 @@ export default {
     }
   },
   methods: {
+    formatNumber(number) {
+      return Number(number).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    },
     populate(data) {
       this.totalCustomers = {"Total Customers": data.totalCustomers};
       this.newReturningCustomers = {"New Customers": data.newCustomers, "Returning Customers": data.returningCustomers};
-      this.customerSpendRange = {"Highest Spender": "$" + data.highestSpender, "Lowest Spender": "$" + data.lowestSpender};
+      this.customerSpendRange = {"Highest Spender": "$" + this.formatNumber(data.highestSpender), "Lowest Spender": "$" + this.formatNumber(data.lowestSpender)};
 
       this.customers = data.topCustomerList;
       for(let i = 0; i < this.customers.length; i++) {
-        this.customers[i].amountSpent = "$" + this.customers[i].amountSpent.toFixed(2).toLocaleString();
-
+        this.customers[i].amountSpent = "$" + this.formatNumber(this.customers[i].amountSpent);
+        delete this.customers[i].shopifyId;
       }
     }
   }

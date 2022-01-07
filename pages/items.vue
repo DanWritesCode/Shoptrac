@@ -83,22 +83,28 @@ export default {
       ipo: {},
       inv: {},
 
-      topItemsCol: ["Name", "Quantity Sold", "% of Gross Sales", "Amount Sold ($)"],
+      topItemsCol: ["Item Name", "Quantity Sold", "% of Item Sales", "Amount Sold ($)"],
 
-      topItems: {},
+      topItems: [],
       //topCollections: {},
     }
   },
   methods: {
+    formatNumber(number) {
+      return Number(number).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    },
     populate(data) {
-      this.aip = {"Average Item Price": "$" + data.avgPrice.toLocaleString()};
-      this.ipo = {"Items per Order": data.itemsPerOrder};
+      this.aip = {"Average Item Price": "$" + this.formatNumber(data.avgPrice)};
+      this.ipo = {"Items per Order": this.formatNumber(data.itemsPerOrder)};
       this.inv = {"Inventory Value": "$0"};
 
-      this.topItems = data.topSellingItems;
-      for(let i = 0; i < this.topItems.length; i++) {
-        this.topItems[i].amountSold = "$" + this.topItems[i].amountSold.toFixed(2).toLocaleString();
-        this.topItems[i].percentageSales = this.topItems[i].percentageSales.toFixed(2).toString() + "%";
+      for(let i = 0; i < data.topSellingItems.length; i++) {
+        let item = {};
+        item.name = data.topSellingItems[i].product.itemName;
+        item.quantitySold = data.topSellingItems[i].quantitySold;
+        item.percentageSales = this.formatNumber(data.topSellingItems[i].percentageSales) + "%";
+        item.amountSold = "$" + data.topSellingItems[i].amountSold;
+        this.topItems.push(item);
       }
       /*this.topCollections = data.topSellingCollections;
       for(let i = 0; i < this.topCollections.length; i++) {

@@ -21,7 +21,7 @@ func GetRevenue(w http.ResponseWriter, r *http.Request) {
 		s.ShippingCharged += rev.ShippingCharged
 		s.TaxesCollected += rev.TaxesCollected
 		s.Tips += rev.Tips
-		s.Discounts += rev.Discounts
+		s.Discounts += rev.Discounts * float64(-1)
 		s.Total += rev.Total
 	}
 

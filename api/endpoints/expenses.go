@@ -9,10 +9,10 @@ import (
 func GetExpenses(w http.ResponseWriter, r *http.Request) {
 
 	s := data.Expenses{
+	  PaymentProcessing: 515.55,
 		COGS:           747.69,
 		Shipping:       512.33,
 		TaxesForwarded: 115.74,
-		TotalMarketing: 1832.74,
 		Marketing: []data.Trio{
 			{
 				Name:       "Facebook",
@@ -30,23 +30,6 @@ func GetExpenses(w http.ResponseWriter, r *http.Request) {
 				Name:       "Shopify Plan",
 				Amount:     29.99,
 				Percentage: 8.3,
-			},
-		},
-		Operational: []data.Trio{
-			{
-				Name:       "Refunds",
-				Amount:     88.11,
-				Percentage: 5.8,
-			},
-			{
-				Name:       "Payment Processing Fees (PayPal)",
-				Amount:     11.48,
-				Percentage: 1.4,
-			},
-			{
-				Name:       "Payment Processing Fees (Shopify)",
-				Amount:     52.82,
-				Percentage: 5.2,
 			},
 		},
 	}

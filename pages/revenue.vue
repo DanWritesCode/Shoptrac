@@ -19,8 +19,8 @@
       <div class="col-12 mt-4"><h3>Revenue</h3></div>
     </div>
     <div class="row">
-      <div class="col-12 col-lg-10">
-        <su-list-box title="Store Revenue" :columns="revenueColumns" :data="revenueData" color-class="is-green"></su-list-box>
+      <div class="col-12">
+        <su-list-box title="Store Revenue Summary" :columns="revenueColumns" :data="revenueData" color-class="is-green"></su-list-box>
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@ export default {
     return {
       notices: [],
       revenueData: [{}],
-      revenueColumns: ["Item Sales", "Shipping Charged", "Taxes Collected", "Tips"]
+      revenueColumns: ["Item Sales", "Shipping Charged", "Taxes Collected", "Tips", "Discounts", "Total"]
     }
   },
   async mounted() {
@@ -57,10 +57,8 @@ export default {
           }
         })
         .then((res) => {
-          res.sales = "$" + res.sales.toFixed(2).toLocaleString();
-          res.shippingCharged = "$" + res.shippingCharged.toFixed(2).toLocaleString();
-          res.taxesCollected = "$" + res.taxesCollected.toFixed(2).toLocaleString();
-          res.tips = "$" + res.tips.toFixed(2).toLocaleString();
+          for(let k in res)
+            res[k] = "$" + this.formatNumber(res[k])
 
           this.revenueData = [res];
         })
@@ -68,7 +66,9 @@ export default {
         })
   },
   methods: {
-
+    formatNumber(number) {
+      return Number(number).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    },
   }
 }
 </script>

@@ -109,25 +109,28 @@ export default {
     }
   },
   methods: {
+    formatNumber(number) {
+      return Number(number).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    },
     populateDashboardSummary(summaryData) {
-      this.orderBreakdown = {"Orders": summaryData.orders, "Average Order Value": "$" + summaryData.aov.toLocaleString()}
-      this.revenueBreakdown = {"Revenue": "$" + summaryData.revenue.toLocaleString(), "Expenses": "$" + summaryData.expenses.toLocaleString()}
-      this.profitBreakdown = {"Profit (USD)": "$" + summaryData.profit.toLocaleString(), "Profit Margin": summaryData.profitMargin + "%"}
+      this.orderBreakdown = {"Orders": summaryData.orders, "Average Order Value": "$" + this.formatNumber(summaryData.aov)}
+      this.revenueBreakdown = {"Revenue": "$" + this.formatNumber(summaryData.revenue), "Expenses": "$" + this.formatNumber(summaryData.expenses)}
+      this.profitBreakdown = {"Profit (USD)": "$" + this.formatNumber(summaryData.profit), "Profit Margin": this.formatNumber(summaryData.profitMargin) + "%"}
 
       this.cogsCost = summaryData.cogs;
       for(let i = 0; i < this.cogsCost.length; i++) {
-        this.cogsCost[i].amount = "$" + this.cogsCost[i].amount.toLocaleString();
-        this.cogsCost[i].percentage += "%";
+        this.cogsCost[i].amount = "$" + this.formatNumber(this.cogsCost[i].amount);
+        this.cogsCost[i].percentage = this.formatNumber(this.cogsCost[i].percentage) + "%";
       }
       this.marketingCost = summaryData.marketing;
       for(let i = 0; i < this.marketingCost.length; i++) {
-        this.marketingCost[i].amount = "$" + this.marketingCost[i].amount.toLocaleString();
-        this.marketingCost[i].percentage += "%";
+        this.marketingCost[i].amount = "$" + this.formatNumber(this.marketingCost[i].amount);
+        this.marketingCost[i].percentage = this.formatNumber(this.marketingCost[i].percentage) + "%";
       }
       this.recurringCost = summaryData.recurringCosts;
       for(let i = 0; i < this.recurringCost.length; i++) {
-        this.recurringCost[i].amount = "$" + this.recurringCost[i].amount.toFixed(2).toLocaleString();
-        this.recurringCost[i].percentage += "%";
+        this.recurringCost[i].amount = "$" + this.formatNumber(this.recurringCost[i].amount);
+        this.recurringCost[i].percentage = this.formatNumber(this.recurringCost[i].percentage) + "%";
       }
 
     }

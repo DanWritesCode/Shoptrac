@@ -16,10 +16,11 @@ type Order struct {
 	Country        string `json:"country"`
 	PaymentGateway string `json:"paymentGateway"`
 
+	Discount    float64 `json:"discount"`
 	Subtotal    float64 `json:"subtotal"`
 	Shipping    float64 `json:"shippingCharged"`
 	Taxes       float64 `json:"taxesCharged"`
-	Tips        float64 `json:"tipsCollected"`
+	Tips        float64 `json:"tipsCollected,omitempty"`
 	TotalAmount float64 `json:"amount"`
 
 	COGS float64 `json:"cogs"`
