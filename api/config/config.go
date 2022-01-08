@@ -16,18 +16,19 @@ type DBConfig struct {
 type AppConfig struct {
 	ClientId     string `json:"client_id,omitempty"`
 	ClientSecret string `json:"client_secret,omitempty"`
-  RedirectURL string `json:"redirect_url,omitempty"`
+	RedirectURL  string `json:"redirect_url,omitempty"`
 }
 
 // Config holds configuration data for the API.
 type Config struct {
-	Host    string     `json:"host,omitempty"`
-	Port    int        `json:"port,omitempty"`
-	Debug   bool       `json:"debug,omitempty"`
-	Timeout int        `json:"timeout,omitempty"`
-	LogFile string     `json:"log_file,omitempty"`
-	DB      *DBConfig  `json:"db,omitempty"`
-	App     *AppConfig `json:"app,omitempty"`
+	Host         string     `json:"host,omitempty"`
+	Port         int        `json:"port,omitempty"`
+	Debug        bool       `json:"debug,omitempty"`
+	Timeout      int        `json:"timeout,omitempty"`
+	LogFile      string     `json:"log_file,omitempty"`
+	DB           *DBConfig  `json:"db,omitempty"`
+	App          *AppConfig `json:"app,omitempty"`
+	FacebookAuth *AppConfig `json:"facebookAuth,omitempty"`
 }
 
 var cfg *Config

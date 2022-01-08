@@ -56,6 +56,9 @@ func InitRouter(timeout int) *chi.Mux {
 			// Configuration POST - User Edits StonksUp' Configuration
 			r.Post("/config", endpoints.PostConfig)
 
+			// Config - Start oAuth process for various integrated apps
+			r.Get("/config/facebook", endpoints.GetFacebook)
+
 		})
 		r.NotFound(endpoints.Error404)
 		r.MethodNotAllowed(endpoints.Error405)
