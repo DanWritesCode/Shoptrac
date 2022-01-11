@@ -83,6 +83,32 @@ func GetDailyRevenue(from int64) ([]*data.Revenue, error) {
 	return revArr, err
 }
 
+func GetDailyExpenses(from int64) ([]*data.Expense, error) {
+	expArr := make([]*data.Expense, 0)
+
+	// Query for a value based on a single row.
+	rows, err := DB.Query("SELECT `id`, `category`, `name`, `date`, `amount` FROM `expenses` WHERE `date` > ? ORDER BY date DESC;", from)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	// Loop through rows, using Scan to assign column data to struct fields.
+	err = nil
+	for rows.Next() {
+		exp := data.Expense{}
+		err2 := rows.Scan(&exp.ID, &exp.Category, &exp.Name, &exp.Date, &exp.Amount)
+		if err2 != nil {
+			err = err2
+		}
+
+		expArr = append(expArr, &exp)
+	}
+
+	return expArr, err
+}
+
 func GetCustomers() ([]*data.Customer, error) {
 	return GetTopCustomersByRevenue(-1)
 }

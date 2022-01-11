@@ -85,3 +85,20 @@ func BulkInsertRevenue(rev []*data.Revenue) error {
 
 	return nil
 }
+
+func BulkInsertExpenses(rev []*data.Expense) error {
+	stmt, err := DB.Prepare("INSERT INTO `expenses` (`id`, `category`, `name`, `date`, `amount`) VALUES (NULL, ?, ?, ?, ?);")
+	defer stmt.Close()
+	if err != nil {
+		return err
+	}
+
+	for _, r := range rev {
+		_, err = stmt.Exec(r.Date, r.Category, r.Name, r.Date, r.Amount)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

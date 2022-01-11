@@ -8,11 +8,11 @@ import (
 
 func GetExpenses(w http.ResponseWriter, r *http.Request) {
 
-	s := data.Expenses{
-	  PaymentProcessing: 515.55,
-		COGS:           747.69,
-		Shipping:       512.33,
-		TaxesForwarded: 115.74,
+	s := data.ExpensesSummary{
+		PaymentProcessing: 515.55,
+		COGS:              747.69,
+		Shipping:          512.33,
+		TaxesForwarded:    115.74,
 		Marketing: []data.Trio{
 			{
 				Name:       "Facebook",
