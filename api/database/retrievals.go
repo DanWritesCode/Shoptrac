@@ -46,6 +46,17 @@ func GetLastOrder() (*data.Order, error) {
 	return &rev, nil
 }
 
+func GetLatestExpenseByName(name string) (*data.Expense, error) {
+	rev := data.Expense{}
+
+	// Query for a value based on a single row.
+	if err := DB.QueryRow("SELECT `id`, `category`, `name`, `date`, `amount` FROM `expenses` WHERE `name` = ? ORDER BY `date` DESC LIMIT 1;", name).Scan(
+		&rev.ID, &rev.Category, &rev.Name, &rev.Date, &rev.Amount); err != nil {
+		return nil, err
+	}
+	return &rev, nil
+}
+
 func GetLastDailyRevenue() (*data.Revenue, error) {
 	rev := data.Revenue{}
 

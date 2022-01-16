@@ -94,7 +94,7 @@ func BulkInsertExpenses(rev []*data.Expense) error {
 	}
 
 	for _, r := range rev {
-		_, err = stmt.Exec(r.Date, r.Category, r.Name, r.Date, r.Amount)
+		_, err = stmt.Exec(r.Category, r.Name, r.Date, r.Amount)
 		if err != nil {
 			return err
 		}

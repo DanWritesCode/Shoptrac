@@ -19,6 +19,16 @@ func ConnectToDB(user, password, address, dbname string) {
 	DB = dab
 }
 
+func GetDatabaseConfig(key string) (string, error) {
+	ret := ""
+
+	// Query for a value based on a single row.
+	if err := DB.QueryRow("SELECT `value` FROM config WHERE name = ?;", key).Scan(&ret); err != nil {
+		return ret, err
+	}
+	return ret, nil
+}
+
 func SetDatabaseConfig(key, value string) error {
 	results, err := DB.Query("SELECT COUNT(id) FROM config WHERE name = ?;", key)
 	if err != nil {

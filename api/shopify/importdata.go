@@ -4,6 +4,12 @@ import (
 	"../data"
 	"../database"
 	"../logging"
+
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
 	"strings"
 
 	goshopify "github.com/bold-commerce/go-shopify"
@@ -47,6 +53,12 @@ func DataImportProcess(shopName string, client *goshopify.Client) {
 	err4 := GenerateDailyRevenue()
 	if err4 != nil {
 		logging.GetLogger().Println(err4.Error())
+	}
+
+	err5 := ImportFacebookAdExpenses()
+	if err5 != nil {
+		//fmt.Println(err5.Error())
+		logging.GetLogger().Println(err5.Error())
 	}
 
 	importsInProgress[shopName] = false
@@ -212,6 +224,102 @@ func ImportProducts(client *goshopify.Client) error {
 	}
 
 	return database.BulkInsertProducts(productArr)
+}
+
+type FacebookInsights struct {
+	Data []struct {
+		Spend     string `json:"spend"`
+		DateStart string `json:"date_start"`
+		DateStop  string `json:"date_stop"`
+	} `json:"data"`
+	Paging struct {
+		Cursors struct {
+			Before string `json:"before"`
+			After  string `json:"after"`
+		} `json:"cursors"`
+		Next string `json:"next,omitempty"`
+	} `json:"paging"`
+}
+
+func ImportFacebookAdExpenses() error {
+	expense, err := database.GetLatestExpenseByName("Facebook")
+	if err != nil {
+		return err
+	}
+
+	var last int64
+	if expense != nil {
+		last = expense.Date
+	} else {
+		// current timestamp minus 60 days
+		// essentially get last 60 days of FB data
+		// TODO: a setting here that checks if the user is able to get extended historical data throughout the application
+		//       if so, then increase the range we pull from FB
+		//last = time.Now().Unix()-94610000 // 1096 days / 36 months
+		last = time.Now().Unix() - 5184000 // 60 days
+	}
+
+	if last <= (time.Now().Unix() - (26280 * 60 * 60)) {
+		last = time.Now().Unix() - (26280 * 60 * 60)
+	}
+
+	since := time.Unix(last, 0).Truncate(24 * time.Hour).Format("2006-01-02")
+	until := time.Now().Truncate(24 * time.Hour).Format("2006-01-02")
+	if since == until {
+		// nothing to update, we're all caught up
+		// TODO: i suppose technically we could update today's information ...
+		return nil
+	}
+
+	// TODO check for ad account expiry
+	fbAddAc, _ := database.GetDatabaseConfig("facebookAdAccountId")
+	fbToken, _ := database.GetDatabaseConfig("facebookAccessToken")
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://graph.facebook.com/v12.0/act_%v/insights?fields=spend&level=account&time_range={since:'%v',until:'%v'}&time_increment=1&limit=1096", fbAddAc, since, until), nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Authorization", "Bearer "+fbToken)
+	resp, err := Client.Do(req)
+	if err != nil {
+		return err
+	}
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode == 200 {
+
+		fbR := FacebookInsights{}
+		err = json.Unmarshal(body, &fbR)
+		if err != nil {
+			return err
+		}
+
+		expensesArr := make([]*data.Expense, 0)
+
+		for _, fbRDay := range fbR.Data {
+			dateSplat, err := time.Parse("2006-01-02", fbRDay.DateStart)
+			if err != nil {
+				continue
+			}
+
+			spend, _ := strconv.ParseFloat(fbRDay.Spend, 64)
+			exp := data.Expense{
+				Category: "MARKETING",
+				Name:     "Facebook",
+				Date:     dateSplat.Unix(),
+				Amount:   spend,
+			}
+
+			expensesArr = append(expensesArr, &exp)
+		}
+
+		err2 := database.BulkInsertExpenses(expensesArr)
+		if err2 != nil {
+			return err2
+		}
+	}
+
+	return nil
 }
 
 func GenerateDailyRevenue() error {

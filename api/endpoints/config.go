@@ -16,8 +16,9 @@ import (
 )
 
 type FacebookRequest struct {
-	Code  string `json:"code"`
-	State string `json:"state"`
+	Code      string `json:"code"`
+	State     string `json:"state"`
+	AdAccount int64  `json:"adAccountId"`
 }
 
 type FacebookResponse struct {
@@ -85,6 +86,7 @@ func PostFacebook(w http.ResponseWriter, r *http.Request) {
 		_ = database.SetDatabaseConfig("facebookAccessToken", fbResponse.AccessToken)
 		_ = database.SetDatabaseConfig("facebookTokenType", fbResponse.TokenType)
 		_ = database.SetDatabaseConfig("facebookExpiresAt", fmt.Sprintf("%d", time.Now().Unix()+fbResponse.ExpiresIn))
+		_ = database.SetDatabaseConfig("facebookAdAccountId", fmt.Sprintf("%d", fbr.AdAccount))
 
 		response.DefaultResponse(w, 200, map[string]string{"message": "Facebook Connection Success"})
 		facebookState[fbr.State] = false

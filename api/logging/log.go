@@ -48,11 +48,13 @@ func SetLevel(level Level) *logrus.Logger {
 
 // SetLogPath will make the logger log to a file.
 func SetLogPath(path string) error {
-	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0755)
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
 		return err
 	}
 
 	log.SetOutput(f)
+	log.Out = f
+
 	return nil
 }
