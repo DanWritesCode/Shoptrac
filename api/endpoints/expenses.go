@@ -13,7 +13,7 @@ func GetExpenses(w http.ResponseWriter, r *http.Request) {
 		COGS:              747.69,
 		Shipping:          512.33,
 		TaxesForwarded:    115.74,
-		Marketing: []data.Trio{
+		Marketing: []*data.Trio{
 			{
 				Name:       "Facebook",
 				Amount:     1499.22,
@@ -25,7 +25,7 @@ func GetExpenses(w http.ResponseWriter, r *http.Request) {
 				Percentage: 25,
 			},
 		},
-		Recurring: []data.Trio{
+		Recurring: []*data.Trio{
 			{
 				Name:       "Shopify Plan",
 				Amount:     29.99,

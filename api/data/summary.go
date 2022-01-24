@@ -8,7 +8,5 @@ type Summary struct {
 	Orders       int     `json:"orders"`
 	AOV          float64 `json:"aov"`
 
-	COGS           []*Trio `json:"cogs"`
-	Marketing      []*Trio `json:"marketing"`
-	RecurringCosts []*Trio `json:"recurringCosts"`
+	GroupedExpenses *GroupedExpenses `json:"groupedExpenses"`
 }

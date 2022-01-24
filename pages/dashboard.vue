@@ -117,17 +117,17 @@ export default {
       this.revenueBreakdown = {"Revenue": "$" + this.formatNumber(summaryData.revenue), "Expenses": "$" + this.formatNumber(summaryData.expenses)}
       this.profitBreakdown = {"Profit (USD)": "$" + this.formatNumber(summaryData.profit), "Profit Margin": this.formatNumber(summaryData.profitMargin) + "%"}
 
-      this.cogsCost = summaryData.cogs;
+      this.cogsCost = summaryData.groupedExpenses.cogs;
       for(let i = 0; i < this.cogsCost.length; i++) {
         this.cogsCost[i].amount = "$" + this.formatNumber(this.cogsCost[i].amount);
         this.cogsCost[i].percentage = this.formatNumber(this.cogsCost[i].percentage) + "%";
       }
-      this.marketingCost = summaryData.marketing;
+      this.marketingCost = summaryData.groupedExpenses.marketing;
       for(let i = 0; i < this.marketingCost.length; i++) {
         this.marketingCost[i].amount = "$" + this.formatNumber(this.marketingCost[i].amount);
         this.marketingCost[i].percentage = this.formatNumber(this.marketingCost[i].percentage) + "%";
       }
-      this.recurringCost = summaryData.recurringCosts;
+      this.recurringCost = summaryData.groupedExpenses.recurring;
       for(let i = 0; i < this.recurringCost.length; i++) {
         this.recurringCost[i].amount = "$" + this.formatNumber(this.recurringCost[i].amount);
         this.recurringCost[i].percentage = this.formatNumber(this.recurringCost[i].percentage) + "%";

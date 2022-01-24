@@ -265,11 +265,6 @@ func ImportFacebookAdExpenses() error {
 
 	since := time.Unix(last, 0).Truncate(24 * time.Hour).Format("2006-01-02")
 	until := time.Now().Truncate(24 * time.Hour).Format("2006-01-02")
-	if since == until {
-		// nothing to update, we're all caught up
-		// TODO: i suppose technically we could update today's information ...
-		return nil
-	}
 
 	// TODO check for ad account expiry
 	fbAddAc, _ := database.GetDatabaseConfig("facebookAdAccountId")

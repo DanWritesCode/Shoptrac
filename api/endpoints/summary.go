@@ -32,17 +32,26 @@ func GetSummary(w http.ResponseWriter, r *http.Request) {
 
 	for _, o := range ord {
 		totalOrderRev += o.TotalAmount
-		totalExpenses += o.Taxes // taxes collected will be automatically considered expenses as they are not kept by the store (hopefully)
+		totalExpenses += o.Taxes + o.COGS // taxes collected will be automatically considered expenses as they are not kept by the store (hopefully)
 	}
 
+	exp, err := database.GetDailyExpenses(0)
+	if err != nil {
+    response.BadRequest(w, "Unable to get expenses from the database")
+    return
+  }
+  for _, e := range exp {
+    totalExpenses += e.Amount
+  }
+
+  // Group various expenses here
+  s.GroupedExpenses = data.GroupExpenses(totalOrderRev, exp)
+
 	s.Profit = s.Revenue - totalExpenses
-	s.ProfitMargin = s.Profit / s.Revenue
+	s.Expenses = totalExpenses
+	s.ProfitMargin = s.Profit / s.Revenue * 100
 	s.Orders = len(ord)
 	s.AOV = s.Revenue / float64(len(ord))
-
-	s.COGS = make([]*data.Trio, 0)
-	s.Marketing = make([]*data.Trio, 0)
-	s.RecurringCosts = make([]*data.Trio, 0)
 
 	response.JSON(w, 200, s)
 }
