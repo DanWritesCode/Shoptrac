@@ -53,7 +53,7 @@ func InitRouter(timeout int) *chi.Mux {
 
 			r.Get("/expenses", endpoints.GetExpenses)
 
-			// Configuration POST - User Edits StonksUp' Configuration
+			// Configuration POST - User Edits App Configuration
 			r.Post("/config", endpoints.PostConfig)
 
 			// Config - Start oAuth process for various integrated apps

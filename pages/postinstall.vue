@@ -5,7 +5,7 @@
         <div class="card bg-box p-5 text-center">
           <div class="mb-3 text-center"><img
               src="~/assets/images/logo.png"
-              alt="StonksUp"
+              alt="Shoptrac"
               class="logo"
           />
           </div>
@@ -28,12 +28,12 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | App Installation'
+      title: 'Shoptrac | App Installation'
     }
   },
   data() {
     return {
-      msg: "Installing StonksUp...",
+      msg: "Installing Shoptrac...",
       txtColor: "text-white"
     }
   },
@@ -53,7 +53,7 @@ export default {
             "url": window.location.search, "code": code, "hmac": hmac, "host": host, "shop": shop, "nonce": state
           })
           .then((res) => {
-            this.msg = "Thank you for installing StonksUp!";
+            this.msg = "Thank you for installing Shoptrac!";
           })
           .catch((res) => {
             this.msg = "An error occurred while installing the app! " + res

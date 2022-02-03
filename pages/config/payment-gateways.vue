@@ -19,7 +19,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Config - Payment Gateways'
+      title: 'Shoptrac | Config - Payment Gateways'
     }
   },
   data() {

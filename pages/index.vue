@@ -17,7 +17,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Home'
+      title: 'Shoptrac | Home'
     }
   },
   data() {

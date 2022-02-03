@@ -4,7 +4,7 @@
       <div class="row align-items-center align-content-center">
         <div class="col-lg-8">
           <h1 class="ff-poppins-eb text-white mb-4">
-            Welcome to StonksUp
+            Welcome to Shoptrac
           </h1>
           <div class="row">
             <div class="col-lg-7">

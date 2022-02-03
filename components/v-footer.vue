@@ -49,7 +49,7 @@
           <div class="col-6 text-left">
             <div>
               <p class="m-0 text-grey-alt">
-                &copy;️ 2022 StonksUp
+                &copy;️ 2022 Shoptrac
               </p>
             </div>
           </div>

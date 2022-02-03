@@ -4,10 +4,10 @@
       <n-link to="/">
         <img
           src="~/assets/images/logo.png"
-          alt="StonksUp"
+          alt="Shoptrac"
           class="logo"
         />
-        StonksUp
+        Shoptrac
       </n-link>
     </h1>
     <p class="text-grey font-weight-bold fs-14">

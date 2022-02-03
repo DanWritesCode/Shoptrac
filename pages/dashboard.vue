@@ -75,7 +75,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Dashboard'
+      title: 'Shoptrac | Dashboard'
     }
   },
   async mounted() {

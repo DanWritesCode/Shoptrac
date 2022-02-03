@@ -19,7 +19,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Config - Recurring Expenses'
+      title: 'Shoptrac | Config - Recurring Expenses'
     }
   },
   data() {

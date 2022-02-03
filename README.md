@@ -1,4 +1,4 @@
-# StonksUp
+# Shoptrac
 An open-source Shopify E-commerce Profit-Tracking App. Featuring a fully-fledged dashboard with the frontend written in 
 Vue.js/Nuxt.
 

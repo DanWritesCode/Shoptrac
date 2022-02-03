@@ -19,7 +19,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Config - COGS'
+      title: 'Shoptrac | Config - COGS'
     }
   },
   data() {

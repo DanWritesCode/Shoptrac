@@ -39,7 +39,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | All Expenses'
+      title: 'Shoptrac | All Expenses'
     }
   },
   data() {

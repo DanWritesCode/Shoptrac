@@ -5,7 +5,7 @@
         <n-link class="navbar-brand" to="/">
           <div class="d-inline-block" style="height: 100%; vertical-align: center;"><img src="~/assets/images/logo.png" /></div>
           <div class="d-inline-block" style="height: 100%; vertical-align: center;">
-            <p class="mb-0">StonksUp</p>
+            <p class="mb-0">Shoptrac</p>
           </div>
         </n-link>
       </div>

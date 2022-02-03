@@ -25,7 +25,7 @@ func RequestAccessToken(shopName, clientId, clientSecret, code string) (data.Sho
 
 	r, _ := http.NewRequest("POST", fmt.Sprintf("https://%v/admin/oauth/access_token", shopName), bytes.NewBuffer(cereal))
 	r.Header.Add("Content-Type", "application/json")
-	r.Header.Add("User-Agent", "StonksUp App")
+	r.Header.Add("User-Agent", "Shoptrac App")
 
 	res, err := Client.Do(r)
 	if err != nil {

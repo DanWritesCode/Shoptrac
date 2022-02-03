@@ -61,7 +61,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Customers'
+      title: 'Shoptrac | Customers'
     }
   },
   async mounted() {

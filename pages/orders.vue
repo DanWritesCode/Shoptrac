@@ -68,7 +68,7 @@ export default {
   transition: 'fade',
   head() {
     return {
-      title: 'StonksUp | Orders'
+      title: 'Shoptrac | Orders'
     }
   },
   data() {
